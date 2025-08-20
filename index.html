@@ -988,7 +988,7 @@
                 <h1 class="fade-in-up">Transform Your Real Estate Business with AI</h1>
                 <p class="subtitle fade-in-up">The only platform that solves every pain point for real estate agents and brokers. Generate more leads, close more deals, and scale your business effortlessly.</p>
                 <div class="cta-buttons fade-in-up">
-                    <a href="#demo" class="btn btn-primary">Start Free Trial</a>
+                    <a href="#" class="btn btn-primary" onclick="startTrial()">Start Free Trial</a>
                     <a href="#features" class="btn btn-secondary">See How It Works</a>
                 </div>
             </div>
@@ -1236,7 +1236,7 @@
             <h2>Ready to Transform Your Real Estate Business?</h2>
             <p>Join thousands of successful agents and brokers who've already made the switch</p>
             <div class="cta-buttons">
-                <a href="login.html" class="btn btn-primary">Start Your Free Trial</a>
+                <a href="#" class="btn btn-primary" onclick="startTrial()">Start Your Free Trial</a>
                 <a href="agent-pain-points.html" class="btn btn-secondary">See All Features</a>
             </div>
         </div>
@@ -1310,6 +1310,87 @@
                 }
             });
         });
+        
+        // Notification system
+        function showNotification(message, type = 'success') {
+            // Remove existing notification
+            const existing = document.querySelector('.notification');
+            if (existing) {
+                existing.remove();
+            }
+
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${type === 'success' ? '#4CAF50' : type === 'error' ? '#f44336' : '#2196F3'};
+                color: white;
+                padding: 15px 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                z-index: 10000;
+                transform: translateX(400px);
+                transition: transform 0.3s ease;
+                max-width: 350px;
+                font-weight: 500;
+            `;
+            
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            // Show notification
+            setTimeout(() => {
+                notification.style.transform = 'translateX(0)';
+            }, 100);
+
+            // Hide notification after 4 seconds
+            setTimeout(() => {
+                notification.style.transform = 'translateX(400px)';
+                setTimeout(() => {
+                    notification.remove();
+                }, 300);
+            }, 4000);
+        }
+        
+        // Rate limiter for trial requests
+        const trialRateLimiter = (() => {
+            let attempts = 0;
+            let lastReset = Date.now();
+            const maxAttempts = 3;
+            const resetTime = 3600000; // 1 hour
+            
+            return () => {
+                const now = Date.now();
+                if (now - lastReset > resetTime) {
+                    attempts = 0;
+                    lastReset = now;
+                }
+                
+                if (attempts >= maxAttempts) {
+                    return false;
+                }
+                
+                attempts++;
+                return true;
+            };
+        })();
+        
+        // Start trial function
+        function startTrial() {
+            if (!trialRateLimiter()) {
+                showNotification('Trial request limit reached. Please wait before requesting again.', 'error');
+                return;
+            }
+            
+            showNotification('🎉 Free trial activated! Check your email for setup instructions.', 'success');
+            
+            // Optional: redirect to login page after a delay
+            setTimeout(() => {
+                window.location.href = 'login.html';
+            }, 2000);
+        }
         
         // Add animation classes on scroll
         const observerOptions = {
