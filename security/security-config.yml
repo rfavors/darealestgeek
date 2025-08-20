@@ -1,0 +1,345 @@
+# Security Configuration for daRealestGeek
+# This file contains security policies, rules, and configurations
+
+# Application Security Settings
+application:
+  name: "daRealestGeek"
+  environment: "${ENVIRONMENT:-production}"
+  debug: false
+  
+  # Security headers
+  security_headers:
+    content_security_policy:
+      default_src: "'self'"
+      script_src: "'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://maps.googleapis.com https://www.google.com https://www.gstatic.com"
+      style_src: "'self' 'unsafe-inline' https://fonts.googleapis.com"
+      font_src: "'self' https://fonts.gstatic.com"
+      img_src: "'self' data: https: blob:"
+      connect_src: "'self' https://api.stripe.com https://api.openai.com https://api.sendgrid.com wss:"
+      frame_src: "'self' https://js.stripe.com https://www.google.com"
+      object_src: "'none'"
+      base_uri: "'self'"
+      form_action: "'self'"
+      frame_ancestors: "'none'"
+      upgrade_insecure_requests: true
+    
+    strict_transport_security:
+      max_age: 31536000
+      include_subdomains: true
+      preload: true
+    
+    x_frame_options: "DENY"
+    x_content_type_options: "nosniff"
+    x_xss_protection: "1; mode=block"
+    referrer_policy: "strict-origin-when-cross-origin"
+    permissions_policy: "geolocation=(), microphone=(), camera=()"
+
+# Authentication & Authorization
+auth:
+  # JWT Configuration
+  jwt:
+    algorithm: "RS256"
+    access_token_expiry: "15m"
+    refresh_token_expiry: "7d"
+    issuer: "darealestgeek.com"
+    audience: "darealestgeek-api"
+    
+  # Session Configuration
+  session:
+    secure: true
+    http_only: true
+    same_site: "strict"
+    max_age: 86400 # 24 hours
+    
+  # Password Policy
+  password_policy:
+    min_length: 12
+    require_uppercase: true
+    require_lowercase: true
+    require_numbers: true
+    require_special_chars: true
+    max_age_days: 90
+    history_count: 12
+    lockout_attempts: 5
+    lockout_duration: 900 # 15 minutes
+    
+  # Multi-Factor Authentication
+  mfa:
+    enabled: true
+    required_for_admin: true
+    backup_codes_count: 10
+    totp_window: 1
+    
+  # OAuth Configuration
+  oauth:
+    google:
+      enabled: true
+      scopes: ["openid", "email", "profile"]
+    microsoft:
+      enabled: true
+      scopes: ["openid", "email", "profile"]
+    
+  # Rate Limiting for Auth
+  rate_limiting:
+    login_attempts:
+      window: 900 # 15 minutes
+      max_attempts: 5
+    password_reset:
+      window: 3600 # 1 hour
+      max_attempts: 3
+    registration:
+      window: 3600 # 1 hour
+      max_attempts: 5
+
+# API Security
+api:
+  # Rate Limiting
+  rate_limiting:
+    global:
+      window: 900 # 15 minutes
+      max_requests: 1000
+    per_user:
+      window: 900 # 15 minutes
+      max_requests: 100
+    per_ip:
+      window: 900 # 15 minutes
+      max_requests: 200
+    
+  # Request Validation
+  validation:
+    max_request_size: "10MB"
+    max_file_size: "50MB"
+    allowed_file_types: [".pdf", ".doc", ".docx", ".jpg", ".jpeg", ".png", ".gif"]
+    
+  # CORS Configuration
+  cors:
+    allowed_origins:
+      - "https://darealestgeek.com"
+      - "https://www.darealestgeek.com"
+      - "https://app.darealestgeek.com"
+    allowed_methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"]
+    allowed_headers: ["Content-Type", "Authorization", "X-Requested-With"]
+    credentials: true
+    max_age: 86400
+
+# Database Security
+database:
+  # Connection Security
+  connection:
+    ssl_mode: "require"
+    ssl_cert_verification: true
+    connection_timeout: 30
+    idle_timeout: 300
+    max_connections: 20
+    
+  # Query Security
+  query_security:
+    prepared_statements: true
+    query_timeout: 30
+    max_query_length: 10000
+    
+  # Encryption
+  encryption:
+    at_rest: true
+    in_transit: true
+    key_rotation_days: 90
+    
+  # Backup Security
+  backup:
+    encryption: true
+    compression: true
+    retention_days: 30
+    offsite_backup: true
+
+# File Upload Security
+file_upload:
+  # File Validation
+  validation:
+    max_file_size: "50MB"
+    allowed_extensions: [".pdf", ".doc", ".docx", ".jpg", ".jpeg", ".png", ".gif"]
+    scan_for_malware: true
+    
+  # Storage Security
+  storage:
+    encrypt_at_rest: true
+    access_control: "private"
+    signed_urls: true
+    url_expiry: 3600 # 1 hour
+    
+  # Image Processing
+  image_processing:
+    strip_metadata: true
+    max_dimensions: "2048x2048"
+    quality: 85
+
+# Logging & Monitoring
+logging:
+  # Security Events
+  security_events:
+    failed_logins: true
+    privilege_escalation: true
+    data_access: true
+    configuration_changes: true
+    
+  # Log Retention
+  retention:
+    security_logs: 365 # 1 year
+    access_logs: 90 # 3 months
+    error_logs: 30 # 1 month
+    
+  # Log Protection
+  protection:
+    encrypt_logs: true
+    tamper_protection: true
+    centralized_logging: true
+
+# Network Security
+network:
+  # Firewall Rules
+  firewall:
+    default_policy: "deny"
+    allowed_ports: [80, 443, 22]
+    ssh_key_only: true
+    
+  # DDoS Protection
+  ddos_protection:
+    enabled: true
+    threshold_requests_per_second: 100
+    block_duration: 3600 # 1 hour
+    
+  # IP Whitelisting
+  ip_whitelist:
+    admin_access: []
+    api_access: []
+    
+  # Intrusion Detection
+  intrusion_detection:
+    enabled: true
+    sensitivity: "medium"
+    auto_block: true
+
+# Data Protection
+data_protection:
+  # Encryption
+  encryption:
+    algorithm: "AES-256-GCM"
+    key_derivation: "PBKDF2"
+    key_rotation_days: 90
+    
+  # Data Classification
+  classification:
+    pii_fields: ["email", "phone", "address", "ssn"]
+    sensitive_fields: ["password", "api_key", "token"]
+    
+  # Data Retention
+  retention:
+    user_data: 2555 # 7 years
+    session_data: 30 # 1 month
+    log_data: 365 # 1 year
+    
+  # Data Anonymization
+  anonymization:
+    enabled: true
+    fields_to_anonymize: ["email", "phone", "ip_address"]
+    retention_after_anonymization: 1095 # 3 years
+
+# Compliance
+compliance:
+  # GDPR
+  gdpr:
+    enabled: true
+    data_controller: "daRealestGeek LLC"
+    dpo_contact: "dpo@darealestgeek.com"
+    
+  # CCPA
+  ccpa:
+    enabled: true
+    
+  # SOC 2
+  soc2:
+    enabled: true
+    
+  # HIPAA (if applicable)
+  hipaa:
+    enabled: false
+
+# Incident Response
+incident_response:
+  # Alert Thresholds
+  alerts:
+    failed_login_threshold: 10
+    data_breach_threshold: 1
+    system_compromise_threshold: 1
+    
+  # Response Team
+  team:
+    primary_contact: "security@darealestgeek.com"
+    escalation_contact: "cto@darealestgeek.com"
+    
+  # Response Procedures
+  procedures:
+    containment_time: 60 # minutes
+    notification_time: 240 # minutes (4 hours)
+    recovery_time: 1440 # minutes (24 hours)
+
+# Security Testing
+security_testing:
+  # Automated Testing
+  automated:
+    dependency_scanning: true
+    sast_scanning: true
+    dast_scanning: true
+    container_scanning: true
+    
+  # Manual Testing
+  manual:
+    penetration_testing_frequency: 180 # days
+    code_review_required: true
+    security_training_frequency: 90 # days
+
+# Third-Party Security
+third_party:
+  # Vendor Assessment
+  vendor_assessment:
+    security_questionnaire: true
+    soc2_required: true
+    penetration_test_results: true
+    
+  # API Security
+  api_security:
+    api_key_rotation: 90 # days
+    webhook_signature_verification: true
+    rate_limiting: true
+    
+  # Integration Security
+  integration_security:
+    oauth_scopes_minimal: true
+    token_encryption: true
+    secure_communication: true
+
+# Environment-Specific Settings
+environments:
+  development:
+    debug: true
+    security_headers:
+      content_security_policy:
+        script_src: "'self' 'unsafe-inline' 'unsafe-eval'"
+    rate_limiting:
+      enabled: false
+      
+  staging:
+    debug: false
+    security_headers:
+      content_security_policy:
+        script_src: "'self' 'unsafe-inline'"
+    rate_limiting:
+      enabled: true
+      
+  production:
+    debug: false
+    security_headers:
+      strict_transport_security:
+        preload: true
+    rate_limiting:
+      enabled: true
+      strict_mode: true

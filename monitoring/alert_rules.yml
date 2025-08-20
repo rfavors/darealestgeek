@@ -1,0 +1,339 @@
+groups:
+  - name: daRealestGeek.alerts
+    rules:
+      # High-level service availability
+      - alert: ServiceDown
+        expr: up == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Service {{ $labels.job }} is down"
+          description: "Service {{ $labels.job }} on {{ $labels.instance }} has been down for more than 1 minute."
+
+      - alert: HighErrorRate
+        expr: |
+          (
+            rate(http_requests_total{status=~"5.."}[5m]) /
+            rate(http_requests_total[5m])
+          ) > 0.1
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High error rate detected"
+          description: "Error rate is {{ $value | humanizePercentage }} for {{ $labels.job }} on {{ $labels.instance }}."
+
+      - alert: HighResponseTime
+        expr: |
+          histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 2
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High response time detected"
+          description: "95th percentile response time is {{ $value }}s for {{ $labels.job }} on {{ $labels.instance }}."
+
+  - name: infrastructure.alerts
+    rules:
+      # System resource alerts
+      - alert: HighCPUUsage
+        expr: |
+          (
+            100 - (avg by (instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100)
+          ) > 80
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High CPU usage detected"
+          description: "CPU usage is {{ $value | humanizePercentage }} on {{ $labels.instance }}."
+
+      - alert: CriticalCPUUsage
+        expr: |
+          (
+            100 - (avg by (instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100)
+          ) > 95
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Critical CPU usage detected"
+          description: "CPU usage is {{ $value | humanizePercentage }} on {{ $labels.instance }}."
+
+      - alert: HighMemoryUsage
+        expr: |
+          (
+            (node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / node_memory_MemTotal_bytes
+          ) > 0.8
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High memory usage detected"
+          description: "Memory usage is {{ $value | humanizePercentage }} on {{ $labels.instance }}."
+
+      - alert: CriticalMemoryUsage
+        expr: |
+          (
+            (node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / node_memory_MemTotal_bytes
+          ) > 0.95
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Critical memory usage detected"
+          description: "Memory usage is {{ $value | humanizePercentage }} on {{ $labels.instance }}."
+
+      - alert: HighDiskUsage
+        expr: |
+          (
+            (node_filesystem_size_bytes - node_filesystem_avail_bytes) / node_filesystem_size_bytes
+          ) > 0.8
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High disk usage detected"
+          description: "Disk usage is {{ $value | humanizePercentage }} on {{ $labels.instance }} for filesystem {{ $labels.mountpoint }}."
+
+      - alert: CriticalDiskUsage
+        expr: |
+          (
+            (node_filesystem_size_bytes - node_filesystem_avail_bytes) / node_filesystem_size_bytes
+          ) > 0.95
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Critical disk usage detected"
+          description: "Disk usage is {{ $value | humanizePercentage }} on {{ $labels.instance }} for filesystem {{ $labels.mountpoint }}."
+
+  - name: database.alerts
+    rules:
+      # PostgreSQL alerts
+      - alert: PostgreSQLDown
+        expr: pg_up == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "PostgreSQL is down"
+          description: "PostgreSQL database on {{ $labels.instance }} has been down for more than 1 minute."
+
+      - alert: PostgreSQLTooManyConnections
+        expr: |
+          (
+            pg_stat_database_numbackends / pg_settings_max_connections
+          ) > 0.8
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "PostgreSQL has too many connections"
+          description: "PostgreSQL connection usage is {{ $value | humanizePercentage }} on {{ $labels.instance }}."
+
+      - alert: PostgreSQLSlowQueries
+        expr: |
+          rate(pg_stat_activity_max_tx_duration[5m]) > 300
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "PostgreSQL slow queries detected"
+          description: "PostgreSQL has queries running longer than 5 minutes on {{ $labels.instance }}."
+
+      - alert: PostgreSQLReplicationLag
+        expr: |
+          pg_replication_lag > 30
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "PostgreSQL replication lag detected"
+          description: "PostgreSQL replication lag is {{ $value }}s on {{ $labels.instance }}."
+
+  - name: redis.alerts
+    rules:
+      # Redis alerts
+      - alert: RedisDown
+        expr: redis_up == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Redis is down"
+          description: "Redis server on {{ $labels.instance }} has been down for more than 1 minute."
+
+      - alert: RedisHighMemoryUsage
+        expr: |
+          (
+            redis_memory_used_bytes / redis_memory_max_bytes
+          ) > 0.8
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Redis high memory usage"
+          description: "Redis memory usage is {{ $value | humanizePercentage }} on {{ $labels.instance }}."
+
+      - alert: RedisHighConnections
+        expr: |
+          redis_connected_clients > 100
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Redis high connection count"
+          description: "Redis has {{ $value }} connected clients on {{ $labels.instance }}."
+
+      - alert: RedisSlowLog
+        expr: |
+          increase(redis_slowlog_length[5m]) > 10
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Redis slow queries detected"
+          description: "Redis slow log has increased by {{ $value }} entries in the last 5 minutes on {{ $labels.instance }}."
+
+  - name: application.alerts
+    rules:
+      # Application-specific alerts
+      - alert: HighAPILatency
+        expr: |
+          histogram_quantile(0.95, rate(http_request_duration_seconds_bucket{job="api-server"}[5m])) > 1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High API latency detected"
+          description: "95th percentile API latency is {{ $value }}s on {{ $labels.instance }}."
+
+      - alert: HighQueueLength
+        expr: |
+          queue_length > 1000
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High queue length detected"
+          description: "Queue {{ $labels.queue }} has {{ $value }} items on {{ $labels.instance }}."
+
+      - alert: FailedJobsHigh
+        expr: |
+          rate(jobs_failed_total[5m]) > 0.1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High job failure rate"
+          description: "Job failure rate is {{ $value }} per second for {{ $labels.job_type }} on {{ $labels.instance }}."
+
+      - alert: WebhookFailures
+        expr: |
+          rate(webhook_requests_total{status!~"2.."}[5m]) > 0.05
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High webhook failure rate"
+          description: "Webhook failure rate is {{ $value }} per second for {{ $labels.webhook_type }} on {{ $labels.instance }}."
+
+      - alert: EmailDeliveryFailures
+        expr: |
+          rate(email_delivery_failures_total[5m]) > 0.01
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Email delivery failures detected"
+          description: "Email delivery failure rate is {{ $value }} per second on {{ $labels.instance }}."
+
+  - name: security.alerts
+    rules:
+      # Security alerts
+      - alert: HighLoginFailureRate
+        expr: |
+          rate(auth_login_failures_total[5m]) > 0.1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High login failure rate detected"
+          description: "Login failure rate is {{ $value }} per second on {{ $labels.instance }}."
+
+      - alert: SuspiciousActivity
+        expr: |
+          rate(security_events_total{type="suspicious"}[5m]) > 0.01
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Suspicious activity detected"
+          description: "Suspicious activity rate is {{ $value }} per second on {{ $labels.instance }}."
+
+      - alert: SSLCertificateExpiringSoon
+        expr: |
+          (ssl_certificate_expiry_timestamp - time()) / 86400 < 7
+        for: 1h
+        labels:
+          severity: warning
+        annotations:
+          summary: "SSL certificate expiring soon"
+          description: "SSL certificate for {{ $labels.instance }} expires in {{ $value }} days."
+
+      - alert: SSLCertificateExpired
+        expr: |
+          ssl_certificate_expiry_timestamp < time()
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "SSL certificate expired"
+          description: "SSL certificate for {{ $labels.instance }} has expired."
+
+  - name: business.alerts
+    rules:
+      # Business metric alerts
+      - alert: LowUserSignups
+        expr: |
+          rate(user_signups_total[1h]) < 0.001
+        for: 2h
+        labels:
+          severity: warning
+        annotations:
+          summary: "Low user signup rate"
+          description: "User signup rate is {{ $value }} per second over the last hour."
+
+      - alert: HighChurnRate
+        expr: |
+          rate(user_cancellations_total[24h]) / rate(user_signups_total[24h]) > 0.1
+        for: 1h
+        labels:
+          severity: warning
+        annotations:
+          summary: "High user churn rate detected"
+          description: "User churn rate is {{ $value | humanizePercentage }} over the last 24 hours."
+
+      - alert: PaymentFailuresHigh
+        expr: |
+          rate(payment_failures_total[5m]) > 0.01
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High payment failure rate"
+          description: "Payment failure rate is {{ $value }} per second on {{ $labels.instance }}."
+
+      - alert: RevenueDropDetected
+        expr: |
+          (
+            rate(revenue_total[1h]) - rate(revenue_total[1h] offset 24h)
+          ) / rate(revenue_total[1h] offset 24h) < -0.2
+        for: 2h
+        labels:
+          severity: critical
+        annotations:
+          summary: "Significant revenue drop detected"
+          description: "Revenue has dropped by {{ $value | humanizePercentage }} compared to 24 hours ago."

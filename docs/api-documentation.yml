@@ -1,0 +1,1400 @@
+openapi: 3.0.3
+info:
+  title: daRealestGeek API
+  description: |
+    The daRealestGeek API provides comprehensive real estate CRM and marketing automation capabilities.
+    
+    ## Features
+    - **Lead Management**: Capture, qualify, and nurture leads
+    - **Calendar & Scheduling**: Smart appointment booking and management
+    - **AI Marketing**: Automated content generation and campaign management
+    - **CRM & Pipelines**: Complete customer relationship management
+    - **Document Management**: E-signature and document workflow
+    - **Analytics**: Comprehensive reporting and insights
+    - **Team Collaboration**: Multi-user and brokerage management
+    
+    ## Authentication
+    This API uses JWT tokens for authentication. Include the token in the Authorization header:
+    ```
+    Authorization: Bearer <your-jwt-token>
+    ```
+    
+    ## Rate Limiting
+    API requests are rate limited to prevent abuse:
+    - 1000 requests per 15 minutes globally
+    - 100 requests per 15 minutes per user
+    - 200 requests per 15 minutes per IP address
+    
+    ## Error Handling
+    The API returns standard HTTP status codes and detailed error messages in JSON format.
+  version: 1.0.0
+  contact:
+    name: daRealestGeek Support
+    email: support@darealestgeek.com
+    url: https://darealestgeek.com/support
+  license:
+    name: Proprietary
+    url: https://darealestgeek.com/license
+  termsOfService: https://darealestgeek.com/terms
+
+servers:
+  - url: https://api.darealestgeek.com/v1
+    description: Production server
+  - url: https://staging-api.darealestgeek.com/v1
+    description: Staging server
+  - url: http://localhost:3001/v1
+    description: Development server
+
+paths:
+  # Authentication Endpoints
+  /auth/login:
+    post:
+      tags: [Authentication]
+      summary: User login
+      description: Authenticate user and return JWT tokens
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: agent@darealestgeek.com
+                password:
+                  type: string
+                  format: password
+                  example: SecurePassword123!
+                remember_me:
+                  type: boolean
+                  default: false
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+
+  /auth/register:
+    post:
+      tags: [Authentication]
+      summary: User registration
+      description: Register a new user account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRegistration'
+      responses:
+        '201':
+          description: Registration successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '409':
+          $ref: '#/components/responses/Conflict'
+
+  /auth/refresh:
+    post:
+      tags: [Authentication]
+      summary: Refresh access token
+      description: Get a new access token using refresh token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [refresh_token]
+              properties:
+                refresh_token:
+                  type: string
+      responses:
+        '200':
+          description: Token refreshed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  # Lead Management Endpoints
+  /leads:
+    get:
+      tags: [Leads]
+      summary: Get leads
+      description: Retrieve a list of leads with filtering and pagination
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Limit'
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [new, contacted, qualified, converted, lost]
+        - name: source
+          in: query
+          schema:
+            type: string
+        - name: assigned_to
+          in: query
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Leads retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LeadsResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    post:
+      tags: [Leads]
+      summary: Create lead
+      description: Create a new lead
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LeadCreate'
+      responses:
+        '201':
+          description: Lead created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lead'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /leads/{leadId}:
+    get:
+      tags: [Leads]
+      summary: Get lead by ID
+      description: Retrieve a specific lead by ID
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/LeadId'
+      responses:
+        '200':
+          description: Lead retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lead'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    put:
+      tags: [Leads]
+      summary: Update lead
+      description: Update an existing lead
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/LeadId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LeadUpdate'
+      responses:
+        '200':
+          description: Lead updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lead'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    delete:
+      tags: [Leads]
+      summary: Delete lead
+      description: Delete a lead
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/LeadId'
+      responses:
+        '204':
+          description: Lead deleted successfully
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  # Calendar & Scheduling Endpoints
+  /calendar/events:
+    get:
+      tags: [Calendar]
+      summary: Get calendar events
+      description: Retrieve calendar events with filtering
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: start_date
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+        - name: end_date
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+        - name: type
+          in: query
+          schema:
+            type: string
+            enum: [appointment, showing, meeting, call]
+      responses:
+        '200':
+          description: Events retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventsResponse'
+
+    post:
+      tags: [Calendar]
+      summary: Create calendar event
+      description: Create a new calendar event
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventCreate'
+      responses:
+        '201':
+          description: Event created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+
+  /calendar/availability:
+    get:
+      tags: [Calendar]
+      summary: Get availability
+      description: Get available time slots for scheduling
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: date
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: duration
+          in: query
+          schema:
+            type: integer
+            default: 60
+            description: Duration in minutes
+      responses:
+        '200':
+          description: Availability retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AvailabilityResponse'
+
+  # AI Marketing Endpoints
+  /ai/content/generate:
+    post:
+      tags: [AI Marketing]
+      summary: Generate content
+      description: Generate marketing content using AI
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContentGenerationRequest'
+      responses:
+        '200':
+          description: Content generated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneratedContent'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /ai/campaigns:
+    get:
+      tags: [AI Marketing]
+      summary: Get marketing campaigns
+      description: Retrieve marketing campaigns
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Limit'
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [draft, active, paused, completed]
+      responses:
+        '200':
+          description: Campaigns retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignsResponse'
+
+    post:
+      tags: [AI Marketing]
+      summary: Create campaign
+      description: Create a new marketing campaign
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CampaignCreate'
+      responses:
+        '201':
+          description: Campaign created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Campaign'
+
+  # CRM & Pipeline Endpoints
+  /contacts:
+    get:
+      tags: [CRM]
+      summary: Get contacts
+      description: Retrieve contacts with filtering and pagination
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Limit'
+        - name: type
+          in: query
+          schema:
+            type: string
+            enum: [lead, client, vendor, partner]
+        - name: search
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Contacts retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContactsResponse'
+
+  /pipelines:
+    get:
+      tags: [CRM]
+      summary: Get pipelines
+      description: Retrieve sales pipelines
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Pipelines retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PipelinesResponse'
+
+  # Document Management Endpoints
+  /documents:
+    get:
+      tags: [Documents]
+      summary: Get documents
+      description: Retrieve documents with filtering
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Limit'
+        - name: type
+          in: query
+          schema:
+            type: string
+            enum: [contract, listing, disclosure, marketing]
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [draft, pending, signed, completed]
+      responses:
+        '200':
+          description: Documents retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentsResponse'
+
+    post:
+      tags: [Documents]
+      summary: Upload document
+      description: Upload a new document
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                title:
+                  type: string
+                type:
+                  type: string
+                  enum: [contract, listing, disclosure, marketing]
+                description:
+                  type: string
+      responses:
+        '201':
+          description: Document uploaded successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Document'
+
+  /documents/{documentId}/sign:
+    post:
+      tags: [Documents]
+      summary: Request signature
+      description: Send document for e-signature
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/DocumentId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignatureRequest'
+      responses:
+        '200':
+          description: Signature request sent successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignatureResponse'
+
+  # Analytics Endpoints
+  /analytics/dashboard:
+    get:
+      tags: [Analytics]
+      summary: Get dashboard data
+      description: Retrieve dashboard analytics data
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: period
+          in: query
+          schema:
+            type: string
+            enum: [day, week, month, quarter, year]
+            default: month
+        - name: start_date
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: end_date
+          in: query
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Dashboard data retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardData'
+
+  /analytics/reports:
+    get:
+      tags: [Analytics]
+      summary: Get reports
+      description: Retrieve available reports
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Reports retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportsResponse'
+
+  # Team Management Endpoints
+  /team/members:
+    get:
+      tags: [Team]
+      summary: Get team members
+      description: Retrieve team members
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Limit'
+        - name: role
+          in: query
+          schema:
+            type: string
+            enum: [admin, agent, assistant, viewer]
+      responses:
+        '200':
+          description: Team members retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamMembersResponse'
+
+    post:
+      tags: [Team]
+      summary: Invite team member
+      description: Invite a new team member
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TeamInvitation'
+      responses:
+        '201':
+          description: Team member invited successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamMember'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  parameters:
+    Page:
+      name: page
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+    
+    Limit:
+      name: limit
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+    
+    LeadId:
+      name: leadId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    
+    DocumentId:
+      name: documentId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+
+  responses:
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    
+    Conflict:
+      description: Resource conflict
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    
+    RateLimited:
+      description: Rate limit exceeded
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      headers:
+        X-RateLimit-Limit:
+          schema:
+            type: integer
+          description: Request limit per time window
+        X-RateLimit-Remaining:
+          schema:
+            type: integer
+          description: Remaining requests in current window
+        X-RateLimit-Reset:
+          schema:
+            type: integer
+          description: Time when rate limit resets
+
+  schemas:
+    Error:
+      type: object
+      required: [error, message]
+      properties:
+        error:
+          type: string
+          example: "VALIDATION_ERROR"
+        message:
+          type: string
+          example: "Invalid input data"
+        details:
+          type: array
+          items:
+            type: object
+            properties:
+              field:
+                type: string
+              message:
+                type: string
+        timestamp:
+          type: string
+          format: date-time
+        request_id:
+          type: string
+          format: uuid
+
+    AuthResponse:
+      type: object
+      required: [access_token, refresh_token, user]
+      properties:
+        access_token:
+          type: string
+        refresh_token:
+          type: string
+        token_type:
+          type: string
+          default: "Bearer"
+        expires_in:
+          type: integer
+          description: Access token expiry in seconds
+        user:
+          $ref: '#/components/schemas/User'
+
+    TokenResponse:
+      type: object
+      required: [access_token]
+      properties:
+        access_token:
+          type: string
+        token_type:
+          type: string
+          default: "Bearer"
+        expires_in:
+          type: integer
+
+    User:
+      type: object
+      required: [id, email, first_name, last_name]
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+        first_name:
+          type: string
+        last_name:
+          type: string
+        avatar_url:
+          type: string
+          format: uri
+        role:
+          type: string
+          enum: [admin, agent, assistant, viewer]
+        organization_id:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    UserRegistration:
+      type: object
+      required: [email, password, first_name, last_name]
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+          minLength: 12
+        first_name:
+          type: string
+        last_name:
+          type: string
+        phone:
+          type: string
+        organization_name:
+          type: string
+
+    Lead:
+      type: object
+      required: [id, first_name, last_name, email, status]
+      properties:
+        id:
+          type: string
+          format: uuid
+        first_name:
+          type: string
+        last_name:
+          type: string
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        status:
+          type: string
+          enum: [new, contacted, qualified, converted, lost]
+        source:
+          type: string
+        assigned_to:
+          type: string
+          format: uuid
+        property_interest:
+          type: object
+          properties:
+            type:
+              type: string
+              enum: [buy, sell, rent]
+            price_range:
+              type: object
+              properties:
+                min:
+                  type: number
+                max:
+                  type: number
+            location:
+              type: string
+        notes:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    LeadCreate:
+      type: object
+      required: [first_name, last_name, email]
+      properties:
+        first_name:
+          type: string
+        last_name:
+          type: string
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        source:
+          type: string
+        property_interest:
+          type: object
+        notes:
+          type: string
+
+    LeadUpdate:
+      type: object
+      properties:
+        first_name:
+          type: string
+        last_name:
+          type: string
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        status:
+          type: string
+          enum: [new, contacted, qualified, converted, lost]
+        assigned_to:
+          type: string
+          format: uuid
+        property_interest:
+          type: object
+        notes:
+          type: string
+
+    LeadsResponse:
+      type: object
+      required: [data, pagination]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Lead'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+
+    Event:
+      type: object
+      required: [id, title, start_time, end_time, type]
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        description:
+          type: string
+        start_time:
+          type: string
+          format: date-time
+        end_time:
+          type: string
+          format: date-time
+        type:
+          type: string
+          enum: [appointment, showing, meeting, call]
+        location:
+          type: string
+        attendees:
+          type: array
+          items:
+            type: object
+            properties:
+              email:
+                type: string
+                format: email
+              name:
+                type: string
+        created_at:
+          type: string
+          format: date-time
+
+    EventCreate:
+      type: object
+      required: [title, start_time, end_time, type]
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        start_time:
+          type: string
+          format: date-time
+        end_time:
+          type: string
+          format: date-time
+        type:
+          type: string
+          enum: [appointment, showing, meeting, call]
+        location:
+          type: string
+        attendees:
+          type: array
+          items:
+            type: string
+            format: email
+
+    EventsResponse:
+      type: object
+      required: [data]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Event'
+
+    AvailabilityResponse:
+      type: object
+      required: [date, slots]
+      properties:
+        date:
+          type: string
+          format: date
+        slots:
+          type: array
+          items:
+            type: object
+            properties:
+              start_time:
+                type: string
+                format: time
+              end_time:
+                type: string
+                format: time
+              available:
+                type: boolean
+
+    ContentGenerationRequest:
+      type: object
+      required: [type, prompt]
+      properties:
+        type:
+          type: string
+          enum: [email, social_post, listing_description, blog_post]
+        prompt:
+          type: string
+        context:
+          type: object
+        tone:
+          type: string
+          enum: [professional, casual, friendly, persuasive]
+        length:
+          type: string
+          enum: [short, medium, long]
+
+    GeneratedContent:
+      type: object
+      required: [content, type]
+      properties:
+        content:
+          type: string
+        type:
+          type: string
+        metadata:
+          type: object
+        suggestions:
+          type: array
+          items:
+            type: string
+
+    Campaign:
+      type: object
+      required: [id, name, type, status]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        type:
+          type: string
+          enum: [email, social, sms, direct_mail]
+        status:
+          type: string
+          enum: [draft, active, paused, completed]
+        target_audience:
+          type: object
+        content:
+          type: object
+        schedule:
+          type: object
+        metrics:
+          type: object
+        created_at:
+          type: string
+          format: date-time
+
+    CampaignCreate:
+      type: object
+      required: [name, type, target_audience, content]
+      properties:
+        name:
+          type: string
+        type:
+          type: string
+          enum: [email, social, sms, direct_mail]
+        target_audience:
+          type: object
+        content:
+          type: object
+        schedule:
+          type: object
+
+    CampaignsResponse:
+      type: object
+      required: [data, pagination]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Campaign'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+
+    Contact:
+      type: object
+      required: [id, first_name, last_name, type]
+      properties:
+        id:
+          type: string
+          format: uuid
+        first_name:
+          type: string
+        last_name:
+          type: string
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        type:
+          type: string
+          enum: [lead, client, vendor, partner]
+        address:
+          type: object
+        tags:
+          type: array
+          items:
+            type: string
+        created_at:
+          type: string
+          format: date-time
+
+    ContactsResponse:
+      type: object
+      required: [data, pagination]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Contact'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+
+    Pipeline:
+      type: object
+      required: [id, name, stages]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        stages:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uuid
+              name:
+                type: string
+              order:
+                type: integer
+              deals_count:
+                type: integer
+              total_value:
+                type: number
+
+    PipelinesResponse:
+      type: object
+      required: [data]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Pipeline'
+
+    Document:
+      type: object
+      required: [id, title, type, status]
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        type:
+          type: string
+          enum: [contract, listing, disclosure, marketing]
+        status:
+          type: string
+          enum: [draft, pending, signed, completed]
+        file_url:
+          type: string
+          format: uri
+        file_size:
+          type: integer
+        mime_type:
+          type: string
+        description:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+
+    DocumentsResponse:
+      type: object
+      required: [data, pagination]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Document'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+
+    SignatureRequest:
+      type: object
+      required: [signers]
+      properties:
+        signers:
+          type: array
+          items:
+            type: object
+            properties:
+              email:
+                type: string
+                format: email
+              name:
+                type: string
+              role:
+                type: string
+        message:
+          type: string
+        deadline:
+          type: string
+          format: date-time
+
+    SignatureResponse:
+      type: object
+      required: [signature_id, status]
+      properties:
+        signature_id:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [sent, pending, signed, declined]
+        signing_url:
+          type: string
+          format: uri
+        expires_at:
+          type: string
+          format: date-time
+
+    DashboardData:
+      type: object
+      required: [metrics, charts]
+      properties:
+        metrics:
+          type: object
+          properties:
+            total_leads:
+              type: integer
+            new_leads:
+              type: integer
+            converted_leads:
+              type: integer
+            total_revenue:
+              type: number
+            active_listings:
+              type: integer
+        charts:
+          type: object
+          properties:
+            leads_by_source:
+              type: array
+              items:
+                type: object
+            revenue_trend:
+              type: array
+              items:
+                type: object
+            conversion_funnel:
+              type: array
+              items:
+                type: object
+
+    Report:
+      type: object
+      required: [id, name, type]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        type:
+          type: string
+          enum: [leads, sales, marketing, performance]
+        description:
+          type: string
+        parameters:
+          type: object
+        created_at:
+          type: string
+          format: date-time
+
+    ReportsResponse:
+      type: object
+      required: [data]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Report'
+
+    TeamMember:
+      type: object
+      required: [id, user, role]
+      properties:
+        id:
+          type: string
+          format: uuid
+        user:
+          $ref: '#/components/schemas/User'
+        role:
+          type: string
+          enum: [admin, agent, assistant, viewer]
+        permissions:
+          type: array
+          items:
+            type: string
+        joined_at:
+          type: string
+          format: date-time
+
+    TeamMembersResponse:
+      type: object
+      required: [data, pagination]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/TeamMember'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+
+    TeamInvitation:
+      type: object
+      required: [email, role]
+      properties:
+        email:
+          type: string
+          format: email
+        role:
+          type: string
+          enum: [admin, agent, assistant, viewer]
+        permissions:
+          type: array
+          items:
+            type: string
+        message:
+          type: string
+
+    Pagination:
+      type: object
+      required: [page, limit, total, pages]
+      properties:
+        page:
+          type: integer
+          minimum: 1
+        limit:
+          type: integer
+          minimum: 1
+        total:
+          type: integer
+          minimum: 0
+        pages:
+          type: integer
+          minimum: 0
+        has_next:
+          type: boolean
+        has_prev:
+          type: boolean
+
+tags:
+  - name: Authentication
+    description: User authentication and authorization
+  - name: Leads
+    description: Lead management and qualification
+  - name: Calendar
+    description: Calendar and scheduling functionality
+  - name: AI Marketing
+    description: AI-powered marketing tools
+  - name: CRM
+    description: Customer relationship management
+  - name: Documents
+    description: Document management and e-signature
+  - name: Analytics
+    description: Analytics and reporting
+  - name: Team
+    description: Team and organization management

@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>da Realest Geek - Solving Agent Pain Points</title>
+    <script src="security-enhancements.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            padding: 40px 0;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header .subtitle {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .header .tagline {
+            font-size: 1.1rem;
+            background: rgba(255,255,255,0.2);
+            padding: 15px 30px;
+            border-radius: 50px;
+            display: inline-block;
+            backdrop-filter: blur(10px);
+        }
+
+        .pain-points-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .pain-point {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border: 3px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pain-point::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #e74c3c, #f39c12, #f1c40f, #27ae60, #3498db);
+        }
+
+        .pain-point:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+            border-color: #667eea;
+        }
+
+        .pain-point-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .pain-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-right: 20px;
+            color: white;
+        }
+
+        .pain-icon.lead-gen { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+        .pain-icon.paperwork { background: linear-gradient(135deg, #f39c12, #e67e22); }
+        .pain-icon.communication { background: linear-gradient(135deg, #3498db, #2980b9); }
+        .pain-icon.marketing { background: linear-gradient(135deg, #9b59b6, #8e44ad); }
+        .pain-icon.pricing { background: linear-gradient(135deg, #27ae60, #229954); }
+
+        .pain-title {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .pain-number {
+            background: #ecf0f1;
+            color: #7f8c8d;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .problem-section {
+            background: #fff5f5;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #e74c3c;
+        }
+
+        .problem-title {
+            color: #e74c3c;
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .problem-title::before {
+            content: '⚠️';
+            margin-right: 8px;
+        }
+
+        .solution-section {
+            background: #f0fff4;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #27ae60;
+        }
+
+        .solution-title {
+            color: #27ae60;
+            font-weight: bold;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .solution-title::before {
+            content: '✅';
+            margin-right: 8px;
+        }
+
+        .solution-features {
+            list-style: none;
+            margin-top: 15px;
+        }
+
+        .solution-features li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+            color: #2c3e50;
+        }
+
+        .solution-features li::before {
+            content: '🚀';
+            position: absolute;
+            left: 0;
+        }
+
+        .demo-button {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+            width: 100%;
+        }
+
+        .demo-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .stats-section {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin: 50px 0;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+
+        .stats-title {
+            font-size: 2rem;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+        }
+
+        .stat-item {
+            padding: 20px;
+            border-radius: 15px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #667eea;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: #6c757d;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+        }
+
+        .cta-section {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            margin-top: 50px;
+        }
+
+        .cta-title {
+            font-size: 2rem;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        .cta-subtitle {
+            font-size: 1.1rem;
+            color: #6c757d;
+            margin-bottom: 30px;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .cta-btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .cta-btn.primary {
+            background: linear-gradient(135deg, #27ae60, #229954);
+            color: white;
+        }
+
+        .cta-btn.primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(39, 174, 96, 0.4);
+        }
+
+        .cta-btn.secondary {
+            background: transparent;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .cta-btn.secondary:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .pain-points-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .pain-point {
+                padding: 20px;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .cta-btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            z-index: 1000;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            background: linear-gradient(135deg, #27ae60, #229954);
+        }
+
+        .notification.info {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>da Realest Geek</h1>
+            <div class="subtitle">AI-Powered Real Estate Solutions</div>
+            <div class="tagline">Solving the 5 Biggest Pain Points for Real Estate Agents</div>
+        </div>
+
+        <div class="pain-points-grid">
+            <!-- Pain Point 1: Lead Generation -->
+            <div class="pain-point">
+                <div class="pain-point-header">
+                    <div class="pain-icon lead-gen">🎯</div>
+                    <div>
+                        <div class="pain-title">Lead Generation & Qualification</div>
+                        <div class="pain-number">Pain Point #1</div>
+                    </div>
+                </div>
+                
+                <div class="problem-section">
+                    <div class="problem-title">The Problem</div>
+                    <p>Agents spend hours chasing cold leads that rarely convert, wasting valuable time and resources on unqualified prospects.</p>
+                </div>
+                
+                <div class="solution-section">
+                    <div class="solution-title">Our AI Solution</div>
+                    <p>AI-powered lead scoring + automated follow-ups to focus only on high-quality buyers/sellers.</p>
+                    <ul class="solution-features">
+                        <li>Smart lead scoring algorithm</li>
+                        <li>Automated qualification surveys</li>
+                        <li>Predictive buyer/seller intent analysis</li>
+                        <li>Intelligent follow-up sequences</li>
+                    </ul>
+                </div>
+                
+                <button class="demo-button" onclick="showDemo('lead-generation')">See Lead AI in Action</button>
+            </div>
+
+            <!-- Pain Point 2: Paperwork -->
+            <div class="pain-point">
+                <div class="pain-point-header">
+                    <div class="pain-icon paperwork">📋</div>
+                    <div>
+                        <div class="pain-title">Time-Consuming Paperwork</div>
+                        <div class="pain-number">Pain Point #2</div>
+                    </div>
+                </div>
+                
+                <div class="problem-section">
+                    <div class="problem-title">The Problem</div>
+                    <p>Contracts, disclosures, and compliance forms eat up hours each week, reducing time for actual selling.</p>
+                </div>
+                
+                <div class="solution-section">
+                    <div class="solution-title">Our AI Solution</div>
+                    <p>Smart document automation that auto-fills, checks compliance, and integrates e-signatures.</p>
+                    <ul class="solution-features">
+                        <li>Intelligent form auto-completion</li>
+                        <li>Real-time compliance checking</li>
+                        <li>Integrated e-signature workflow</li>
+                        <li>Document template library</li>
+                    </ul>
+                </div>
+                
+                <button class="demo-button" onclick="showDemo('paperwork')">Try Document AI</button>
+            </div>
+
+            <!-- Pain Point 3: Communication -->
+            <div class="pain-point">
+                <div class="pain-point-header">
+                    <div class="pain-icon communication">💬</div>
+                    <div>
+                        <div class="pain-title">Client Communication Overload</div>
+                        <div class="pain-number">Pain Point #3</div>
+                    </div>
+                </div>
+                
+                <div class="problem-section">
+                    <div class="problem-title">The Problem</div>
+                    <p>Juggling texts, calls, and emails with multiple clients often leads to missed messages and frustrated clients.</p>
+                </div>
+                
+                <div class="solution-section">
+                    <div class="solution-title">Our AI Solution</div>
+                    <p>Centralized AI-driven CRM that organizes and automates communication.</p>
+                    <ul class="solution-features">
+                        <li>Unified communication dashboard</li>
+                        <li>AI-powered response suggestions</li>
+                        <li>Automated appointment scheduling</li>
+                        <li>Smart priority messaging</li>
+                    </ul>
+                </div>
+                
+                <button class="demo-button" onclick="showDemo('communication')">Explore CRM AI</button>
+            </div>
+
+            <!-- Pain Point 4: Marketing -->
+            <div class="pain-point">
+                <div class="pain-point-header">
+                    <div class="pain-icon marketing">📱</div>
+                    <div>
+                        <div class="pain-title">Marketing Challenges</div>
+                        <div class="pain-number">Pain Point #4</div>
+                    </div>
+                </div>
+                
+                <div class="problem-section">
+                    <div class="problem-title">The Problem</div>
+                    <p>Many agents struggle with creating consistent, professional listings, social posts, and video ads.</p>
+                </div>
+                
+                <div class="solution-section">
+                    <div class="solution-title">Our AI Solution</div>
+                    <p>AI tools that generate property descriptions, marketing campaigns, and virtual staging instantly.</p>
+                    <ul class="solution-features">
+                        <li>AI-generated property descriptions</li>
+                        <li>Automated social media campaigns</li>
+                        <li>Virtual staging and photography</li>
+                        <li>Video marketing automation</li>
+                    </ul>
+                </div>
+                
+                <button class="demo-button" onclick="showDemo('marketing')">Try Marketing AI</button>
+            </div>
+
+            <!-- Pain Point 5: Market Analysis -->
+            <div class="pain-point">
+                <div class="pain-point-header">
+                    <div class="pain-icon pricing">📊</div>
+                    <div>
+                        <div class="pain-title">Market Analysis & Pricing</div>
+                        <div class="pain-number">Pain Point #5</div>
+                    </div>
+                </div>
+                
+                <div class="problem-section">
+                    <div class="problem-title">The Problem</div>
+                    <p>Pricing homes correctly requires analyzing tons of data—time agents don't always have.</p>
+                </div>
+                
+                <div class="solution-section">
+                    <div class="solution-title">Our AI Solution</div>
+                    <p>Predictive AI models that analyze comps and market trends to recommend competitive pricing.</p>
+                    <ul class="solution-features">
+                        <li>Automated comparative market analysis</li>
+                        <li>Real-time market trend analysis</li>
+                        <li>Predictive pricing models</li>
+                        <li>Investment opportunity detection</li>
+                    </ul>
+                </div>
+                
+                <button class="demo-button" onclick="showDemo('pricing')">Test Pricing AI</button>
+            </div>
+        </div>
+
+        <!-- Stats Section -->
+        <div class="stats-section">
+            <h2 class="stats-title">Real Results from Real Agents</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">73%</span>
+                    <span class="stat-label">Time Saved on Paperwork</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">2.5x</span>
+                    <span class="stat-label">More Qualified Leads</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">89%</span>
+                    <span class="stat-label">Faster Client Response</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">156%</span>
+                    <span class="stat-label">Increase in Listings</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- CTA Section -->
+        <div class="cta-section">
+            <h2 class="cta-title">Ready to Transform Your Real Estate Business?</h2>
+            <p class="cta-subtitle">Join thousands of agents who've already solved their biggest pain points with AI</p>
+            <div class="cta-buttons">
+                <a href="#" class="cta-btn primary" onclick="startTrial()">Start Free Trial</a>
+                <a href="real-estate-options.html" class="cta-btn secondary">Explore Platform</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Authentication check - redirect to login if not authenticated
+        function checkAuthentication() {
+            const user = localStorage.getItem('da_realest_geek_user');
+            if (!user) {
+                // Redirect to login page
+                window.location.href = 'login.html';
+                return false;
+            }
+            
+            try {
+                const userData = JSON.parse(user);
+                const loginTime = new Date(userData.loginTime);
+                const now = new Date();
+                const hoursSinceLogin = (now - loginTime) / (1000 * 60 * 60);
+                
+                // Session expires after 24 hours
+                if (hoursSinceLogin > 24) {
+                    localStorage.removeItem('da_realest_geek_user');
+                    window.location.href = 'login.html';
+                    return false;
+                }
+                
+                // Display welcome message
+                displayWelcomeMessage(userData.name);
+                return true;
+            } catch (e) {
+                localStorage.removeItem('da_realest_geek_user');
+                window.location.href = 'login.html';
+                return false;
+            }
+        }
+        
+        function displayWelcomeMessage(userName) {
+            const header = document.querySelector('.header');
+            const welcomeDiv = document.createElement('div');
+            welcomeDiv.style.cssText = `
+                background: rgba(255,255,255,0.2);
+                padding: 10px 20px;
+                border-radius: 25px;
+                margin-top: 20px;
+                backdrop-filter: blur(10px);
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                max-width: 400px;
+                margin-left: auto;
+                margin-right: auto;
+            `;
+            
+            welcomeDiv.innerHTML = `
+                <span>Welcome, ${userName}!</span>
+                <button onclick="logout()" style="
+                    background: rgba(255,255,255,0.3);
+                    border: none;
+                    color: white;
+                    padding: 5px 15px;
+                    border-radius: 15px;
+                    cursor: pointer;
+                    font-weight: 600;
+                ">Logout</button>
+            `;
+            
+            header.appendChild(welcomeDiv);
+        }
+        
+        function logout() {
+            localStorage.removeItem('da_realest_geek_user');
+            window.location.href = 'login.html';
+        }
+        
+        // Check authentication on page load
+        if (!checkAuthentication()) {
+            // Page will redirect, so we can stop execution here
+            throw new Error('Authentication required');
+        }
+
+        function showDemo(type) {
+            // Validate input to prevent injection attacks
+            if (window.securityEnhancer) {
+                if (!window.securityEnhancer.validateSQLInjection(type) || 
+                    !window.securityEnhancer.validatePromptInjection(type)) {
+                    window.securityEnhancer.showSecurityWarning('Invalid demo request detected.');
+                    return;
+                }
+            }
+            
+            const demos = {
+                'lead-generation': {
+                    title: 'Lead Generation AI Demo',
+                    message: 'Analyzing 1,247 leads... Found 23 high-quality prospects ready to buy/sell!',
+                    details: 'AI identified: 8 cash buyers, 15 pre-approved buyers, 12 motivated sellers'
+                },
+                'paperwork': {
+                    title: 'Document Automation Demo',
+                    message: 'Auto-filling purchase agreement... Compliance check passed! Ready for e-signature.',
+                    details: 'Saved 2.5 hours of manual form completion and eliminated 3 compliance errors'
+                },
+                'communication': {
+                    title: 'CRM AI Demo',
+                    message: 'Organizing 47 client messages... Prioritized 5 urgent responses, scheduled 3 showings.',
+                    details: 'AI suggested responses for 12 inquiries and detected 2 hot leads'
+                },
+                'marketing': {
+                    title: 'Marketing AI Demo',
+                    message: 'Generated compelling listing description, 5 social posts, and virtual staging in 30 seconds!',
+                    details: 'Created professional marketing materials that typically take 3+ hours'
+                },
+                'pricing': {
+                    title: 'Pricing AI Demo',
+                    message: 'Analyzed 156 comparable sales... Recommended listing price: $485,000 (±2% accuracy)',
+                    details: 'Market analysis shows 14% price appreciation potential over next 6 months'
+                }
+            };
+
+            const demo = demos[type];
+            if (demo) {
+                // Sanitize content before displaying
+                const sanitizedMessage = window.securityEnhancer ? 
+                    window.securityEnhancer.sanitizeInput(demo.message) : demo.message;
+                const sanitizedDetails = window.securityEnhancer ? 
+                    window.securityEnhancer.sanitizeInput(demo.details) : demo.details;
+                    
+                showNotification(sanitizedMessage, 'info');
+                
+                setTimeout(() => {
+                    showNotification(sanitizedDetails, 'success');
+                }, 2000);
+            }
+        }
+
+        function showNotification(message, type) {
+            // Sanitize message content
+            const sanitizedMessage = window.securityEnhancer ? 
+                window.securityEnhancer.sanitizeInput(message) : message;
+                
+            // Remove existing notifications
+            const existing = document.querySelector('.notification');
+            if (existing) {
+                existing.remove();
+            }
+
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            
+            if (notification.setSafeHTML) {
+                notification.setSafeHTML(sanitizedMessage);
+            } else {
+                notification.textContent = sanitizedMessage;
+            }
+            
+            document.body.appendChild(notification);
+
+            // Show notification
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 100);
+
+            // Hide notification after 4 seconds
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    notification.remove();
+                }, 300);
+            }, 4000);
+        }
+
+        // Rate limiter for trial requests
+        const trialRateLimiter = window.securityEnhancer ? 
+            window.securityEnhancer.createRateLimiter(3, 3600000) : // 3 attempts per hour
+            () => true;
+            
+        function startTrial() {
+            if (!trialRateLimiter()) {
+                showNotification('Trial request limit reached. Please wait before requesting again.', 'error');
+                return;
+            }
+            
+            showNotification('🎉 Free trial activated! Check your email for setup instructions.', 'success');
+        }
+
+        // Add scroll animations
+        document.addEventListener('DOMContentLoaded', function() {
+            const painPoints = document.querySelectorAll('.pain-point');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            painPoints.forEach(point => {
+                point.style.opacity = '0';
+                point.style.transform = 'translateY(30px)';
+                point.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(point);
+            });
+        });
+    </script>
+</body>
+</html>

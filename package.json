@@ -1,0 +1,50 @@
+{
+  "name": "da-realest-geek",
+  "version": "1.0.0",
+  "description": "AI-Powered Real Estate SaaS Platform",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "start": "turbo run start",
+    "lint": "turbo run lint",
+    "test": "turbo run test",
+    "type-check": "turbo run type-check",
+    "clean": "turbo run clean",
+    "db:setup": "cd packages/database && npm run db:setup",
+    "db:migrate": "cd packages/database && npm run db:migrate",
+    "db:seed": "cd packages/database && npm run db:seed",
+    "db:studio": "cd packages/database && npm run db:studio",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md}\""
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "eslint": "^8.55.0",
+    "prettier": "^3.1.0",
+    "turbo": "^1.11.0",
+    "typescript": "^5.3.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/da-realest-geek/platform.git"
+  },
+  "keywords": [
+    "real-estate",
+    "saas",
+    "ai",
+    "crm",
+    "lead-generation",
+    "automation"
+  ],
+  "author": "da Realest Geek Team",
+  "license": "UNLICENSED"
+}

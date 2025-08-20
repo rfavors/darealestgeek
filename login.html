@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>da Realest Geek - Member Login</title>
+    <script src="security-enhancements.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+            width: 100%;
+            max-width: 400px;
+            position: relative;
+        }
+
+        .login-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .login-header h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .login-header p {
+            opacity: 0.9;
+            font-size: 1rem;
+        }
+
+        .login-form {
+            padding: 40px 30px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .login-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .signup-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .signup-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .signup-link a:hover {
+            text-decoration: underline;
+        }
+
+        .demo-credentials {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+
+        .demo-credentials h4 {
+            color: #495057;
+            margin-bottom: 10px;
+        }
+
+        .demo-credentials p {
+            margin: 5px 0;
+            color: #6c757d;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #f5c6cb;
+            display: none;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #c3e6cb;
+            display: none;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #ffffff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                margin: 10px;
+            }
+            
+            .login-header {
+                padding: 30px 20px;
+            }
+            
+            .login-form {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <h1>da Realest Geek</h1>
+            <p>Member Access Portal</p>
+        </div>
+        
+        <div class="login-form">
+            <div class="demo-credentials">
+                <h4>Demo Credentials:</h4>
+                <p><strong>Email:</strong> agent@realestategeek.com</p>
+                <p><strong>Password:</strong> demo123</p>
+            </div>
+            
+            <div id="errorMessage" class="error-message"></div>
+            <div id="successMessage" class="success-message"></div>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                
+                <button type="submit" class="login-btn" id="loginBtn">
+                    <span id="loginText">Sign In</span>
+                    <span id="loginLoader" class="loading" style="display: none;"></span>
+                </button>
+            </form>
+            
+            <div class="signup-link">
+                <p>Don't have an account? <a href="#" onclick="showSignup()">Sign up here</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Demo user credentials
+        const validUsers = [
+            { email: 'agent@realestategeek.com', password: 'demo123', name: 'Demo Agent' },
+            { email: 'broker@realestategeek.com', password: 'broker123', name: 'Demo Broker' },
+            { email: 'admin@realestategeek.com', password: 'admin123', name: 'Admin User' }
+        ];
+
+        // Rate limiter for login attempts
+        const loginRateLimiter = window.securityEnhancer ? 
+            window.securityEnhancer.createRateLimiter(5, 300000) : // 5 attempts per 5 minutes
+            () => true; // Fallback if security enhancer not loaded
+
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Check rate limiting
+            if (!loginRateLimiter()) {
+                 const errorMessage = document.getElementById('errorMessage');
+                 if (errorMessage.setSafeHTML) {
+                     errorMessage.setSafeHTML('Too many login attempts. Please wait 5 minutes before trying again.');
+                 } else {
+                     errorMessage.textContent = 'Too many login attempts. Please wait 5 minutes before trying again.';
+                 }
+                 errorMessage.style.display = 'block';
+                 return;
+             }
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const loginBtn = document.getElementById('loginBtn');
+            const loginText = document.getElementById('loginText');
+            const loginLoader = document.getElementById('loginLoader');
+            const errorMessage = document.getElementById('errorMessage');
+            const successMessage = document.getElementById('successMessage');
+            
+            // Validate inputs using security enhancer
+            if (window.securityEnhancer) {
+                if (!window.securityEnhancer.validateEmail(email)) {
+                    if (errorMessage.setSafeHTML) {
+                        errorMessage.setSafeHTML('Please enter a valid email address.');
+                    } else {
+                        errorMessage.textContent = 'Please enter a valid email address.';
+                    }
+                    errorMessage.style.display = 'block';
+                    return;
+                }
+                
+                if (!window.securityEnhancer.validateSQLInjection(email) || 
+                    !window.securityEnhancer.validateSQLInjection(password)) {
+                    if (errorMessage.setSafeHTML) {
+                        errorMessage.setSafeHTML('Invalid characters detected in input.');
+                    } else {
+                        errorMessage.textContent = 'Invalid characters detected in input.';
+                    }
+                    errorMessage.style.display = 'block';
+                    return;
+                }
+                
+                if (!window.securityEnhancer.validatePromptInjection(email) || 
+                    !window.securityEnhancer.validatePromptInjection(password)) {
+                    if (errorMessage.setSafeHTML) {
+                        errorMessage.setSafeHTML('Invalid input detected.');
+                    } else {
+                        errorMessage.textContent = 'Invalid input detected.';
+                    }
+                    errorMessage.style.display = 'block';
+                    return;
+                }
+            }
+            
+            // Hide previous messages
+            errorMessage.style.display = 'none';
+            successMessage.style.display = 'none';
+            
+            // Show loading state
+            loginBtn.disabled = true;
+            loginText.style.display = 'none';
+            loginLoader.style.display = 'inline-block';
+            
+            // Simulate authentication delay
+            setTimeout(() => {
+                const user = validUsers.find(u => u.email === email && u.password === password);
+                
+                if (user) {
+                    // Store user session
+                    localStorage.setItem('da_realest_geek_user', JSON.stringify({
+                        email: user.email,
+                        name: user.name,
+                        loginTime: new Date().toISOString()
+                    }));
+                    
+                    if (successMessage.setSafeHTML) {
+                        successMessage.setSafeHTML(`Welcome back, ${user.name}! Redirecting...`);
+                    } else {
+                        successMessage.textContent = `Welcome back, ${user.name}! Redirecting...`;
+                    }
+                    successMessage.style.display = 'block';
+                    
+                    // Redirect to pain points page
+                    setTimeout(() => {
+                        window.location.href = 'agent-pain-points.html';
+                    }, 1500);
+                } else {
+                    if (errorMessage.setSafeHTML) {
+                        errorMessage.setSafeHTML('Invalid email or password. Please try again.');
+                    } else {
+                        errorMessage.textContent = 'Invalid email or password. Please try again.';
+                    }
+                    errorMessage.style.display = 'block';
+                    
+                    // Reset form
+                    loginBtn.disabled = false;
+                    loginText.style.display = 'inline-block';
+                    loginLoader.style.display = 'none';
+                }
+            }, 1500);
+        });
+        
+        function showSignup() {
+            alert('Signup functionality would redirect to registration page. For demo purposes, use the provided credentials.');
+        }
+        
+        // Auto-fill demo credentials on page load
+        window.addEventListener('load', function() {
+            document.getElementById('email').value = 'agent@realestategeek.com';
+            document.getElementById('password').value = 'demo123';
+            
+            // Add real-time input validation
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+            
+            emailInput.addEventListener('blur', function() {
+                if (this.value && window.securityEnhancer && !window.securityEnhancer.validateEmail(this.value)) {
+                    const errorMessage = document.getElementById('errorMessage');
+                    if (errorMessage.setSafeHTML) {
+                        errorMessage.setSafeHTML('Please enter a valid email address.');
+                    } else {
+                        errorMessage.textContent = 'Please enter a valid email address.';
+                    }
+                    errorMessage.style.display = 'block';
+                    this.focus();
+                }
+            });
+            
+            // Add input sanitization
+            [emailInput, passwordInput].forEach(input => {
+                input.addEventListener('input', function() {
+                    if (window.securityEnhancer) {
+                        const sanitized = window.securityEnhancer.sanitizeInput(this.value);
+                        if (sanitized !== this.value) {
+                            this.value = sanitized;
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

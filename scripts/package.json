@@ -1,0 +1,41 @@
+{
+  "name": "@darealestgeek/security-scripts",
+  "version": "1.0.0",
+  "description": "Security testing and monitoring scripts for daRealestGeek platform",
+  "main": "test-security.js",
+  "scripts": {
+    "test:security": "node test-security.js",
+    "test:security:dev": "API_URL=http://localhost:3001 node test-security.js",
+    "test:security:staging": "API_URL=https://staging-api.darealestgeek.com node test-security.js",
+    "test:security:prod": "API_URL=https://api.darealestgeek.com node test-security.js",
+    "monitor:security": "node monitor-security.js",
+    "generate:security-report": "node generate-security-report.js"
+  },
+  "dependencies": {
+    "axios": "^1.6.2",
+    "chalk": "^4.1.2",
+    "commander": "^11.1.0",
+    "dotenv": "^16.3.1",
+    "fs-extra": "^11.2.0",
+    "lodash": "^4.17.21",
+    "moment": "^2.29.4",
+    "node-cron": "^3.0.3"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.4",
+    "eslint": "^8.56.0",
+    "prettier": "^3.1.1"
+  },
+  "keywords": [
+    "security",
+    "testing",
+    "penetration-testing",
+    "vulnerability-assessment",
+    "monitoring"
+  ],
+  "author": "daRealestGeek Team",
+  "license": "MIT",
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}

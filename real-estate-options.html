@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real Estate Options - da Realest Geek</title>
+    <script src="security-enhancements.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .option-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid #e0e0e0;
+        }
+
+        .option-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .option-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .option-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-right: 15px;
+            color: white;
+        }
+
+        .residential { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        .commercial { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+        .luxury { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+        .investment { background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); }
+        .new-construction { background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%); }
+        .vacation { background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); }
+
+        .option-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .option-subtitle {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        .option-features {
+            list-style: none;
+            margin: 20px 0;
+        }
+
+        .option-features li {
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+        }
+
+        .option-features li:last-child {
+            border-bottom: none;
+        }
+
+        .feature-icon {
+            color: #27ae60;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .price-range {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+            font-weight: 600;
+        }
+
+        .cta-button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .ai-features {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .ai-features h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .ai-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .ai-feature {
+            text-align: center;
+            padding: 20px;
+            border-radius: 10px;
+            background: #f8f9fa;
+        }
+
+        .ai-feature-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        /* Notification styles */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            max-width: 400px;
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            z-index: 1000;
+            animation: slideIn 0.3s ease-out;
+            font-weight: 500;
+        }
+
+        .notification.info {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+        }
+
+        .notification.processing {
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+            color: white;
+        }
+
+        .notification.success {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            color: white;
+        }
+
+        .notification-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .notification-message {
+            flex: 1;
+            margin-right: 10px;
+        }
+
+        .notification-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            padding: 0;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background-color 0.2s ease;
+        }
+
+        .notification-close:hover {
+            background-color: rgba(255,255,255,0.2);
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Enhanced button states */
+        .cta-button:disabled {
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .ai-feature {
+            transition: all 0.3s ease;
+        }
+
+        .ai-feature:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        /* Results Panel Styles */
+        .results-panel {
+            margin-top: 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border: 2px solid #e8f4fd;
+        }
+
+        .results-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .results-header h3 {
+            margin: 0;
+            font-size: 1.3rem;
+        }
+
+        .close-results {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 50%;
+            transition: background-color 0.2s ease;
+        }
+
+        .close-results:hover {
+            background-color: rgba(255,255,255,0.2);
+        }
+
+        .results-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            padding: 25px;
+            background: #f8fafe;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .stat-number {
+            display: block;
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .sample-listings {
+            padding: 25px;
+        }
+
+        .sample-listings h4 {
+            margin: 0 0 20px 0;
+            color: #333;
+            font-size: 1.2rem;
+        }
+
+        .listing-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 10px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            transition: all 0.2s ease;
+        }
+
+        .listing-item:hover {
+            background: #f0f4ff;
+            transform: translateX(5px);
+        }
+
+        .listing-address {
+            font-weight: bold;
+            color: #333;
+            flex: 1;
+        }
+
+        .listing-details {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .listing-details .price {
+            font-weight: bold;
+            color: #27ae60;
+            font-size: 1.1rem;
+        }
+
+        .listing-details .detail {
+            color: #666;
+            font-size: 0.9rem;
+            background: #e8f4fd;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            padding: 25px;
+            background: #f8fafe;
+            border-top: 1px solid #e8f4fd;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+
+        .action-btn.primary {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            color: white;
+        }
+
+        .action-btn.primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3);
+        }
+
+        .action-btn.secondary {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+        }
+
+        .action-btn.secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        .action-btn.tertiary {
+            background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
+            color: white;
+        }
+
+        .action-btn.tertiary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(155, 89, 182, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .option-card {
+                padding: 20px;
+            }
+            
+            .notification {
+                top: 10px;
+                right: 10px;
+                left: 10px;
+                max-width: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏠 da Realest Geek - Real Estate SaaS Platform</h1>
+            <p>Solving Every Pain Point for Real Estate Agents & Brokers with AI-Powered Solutions</p>
+        </div>
+
+        <div class="options-grid">
+            <div class="option-card">
+                <div class="option-header">
+                    <div class="option-icon residential">🏡</div>
+                    <div>
+                        <div class="option-title">Residential Homes</div>
+                        <div class="option-subtitle">Single-family homes & condos</div>
+                    </div>
+                </div>
+                <ul class="option-features">
+                    <li><span class="feature-icon">✓</span> Single-family houses</li>
+                    <li><span class="feature-icon">✓</span> Townhomes & condominiums</li>
+                    <li><span class="feature-icon">✓</span> First-time buyer programs</li>
+                    <li><span class="feature-icon">✓</span> Move-in ready properties</li>
+                    <li><span class="feature-icon">✓</span> School district analysis</li>
+                </ul>
+                <div class="price-range">$150K - $800K</div>
+                <button class="cta-button" onclick="exploreOption('residential')">Explore Residential</button>
+            </div>
+
+            <div class="option-card">
+                <div class="option-header">
+                    <div class="option-icon commercial">🏢</div>
+                    <div>
+                        <div class="option-title">Commercial Properties</div>
+                        <div class="option-subtitle">Office, retail & industrial</div>
+                    </div>
+                </div>
+                <ul class="option-features">
+                    <li><span class="feature-icon">✓</span> Office buildings</li>
+                    <li><span class="feature-icon">✓</span> Retail spaces</li>
+                    <li><span class="feature-icon">✓</span> Industrial warehouses</li>
+                    <li><span class="feature-icon">✓</span> Mixed-use developments</li>
+                    <li><span class="feature-icon">✓</span> Investment analysis</li>
+                </ul>
+                <div class="price-range">$500K - $10M+</div>
+                <button class="cta-button" onclick="exploreOption('commercial')">Explore Commercial</button>
+            </div>
+
+            <div class="option-card">
+                <div class="option-header">
+                    <div class="option-icon luxury">💎</div>
+                    <div>
+                        <div class="option-title">Luxury Estates</div>
+                        <div class="option-subtitle">Premium & high-end properties</div>
+                    </div>
+                </div>
+                <ul class="option-features">
+                    <li><span class="feature-icon">✓</span> Luxury homes & estates</li>
+                    <li><span class="feature-icon">✓</span> Waterfront properties</li>
+                    <li><span class="feature-icon">✓</span> Gated communities</li>
+                    <li><span class="feature-icon">✓</span> Custom-built homes</li>
+                    <li><span class="feature-icon">✓</span> Concierge services</li>
+                </ul>
+                <div class="price-range">$1M - $50M+</div>
+                <button class="cta-button" onclick="exploreOption('luxury')">Explore Luxury</button>
+            </div>
+
+            <div class="option-card">
+                <div class="option-header">
+                    <div class="option-icon investment">📈</div>
+                    <div>
+                        <div class="option-title">Investment Properties</div>
+                        <div class="option-subtitle">Rental & income-generating</div>
+                    </div>
+                </div>
+                <ul class="option-features">
+                    <li><span class="feature-icon">✓</span> Multi-family properties</li>
+                    <li><span class="feature-icon">✓</span> Rental income analysis</li>
+                    <li><span class="feature-icon">✓</span> Fix-and-flip opportunities</li>
+                    <li><span class="feature-icon">✓</span> REO & foreclosures</li>
+                    <li><span class="feature-icon">✓</span> ROI calculations</li>
+                </ul>
+                <div class="price-range">$100K - $5M</div>
+                <button class="cta-button" onclick="exploreOption('investment')">Explore Investment</button>
+            </div>
+
+            <div class="option-card">
+                <div class="option-header">
+                    <div class="option-icon new-construction">🔨</div>
+                    <div>
+                        <div class="option-title">New Construction</div>
+                        <div class="option-subtitle">Brand new & pre-construction</div>
+                    </div>
+                </div>
+                <ul class="option-features">
+                    <li><span class="feature-icon">✓</span> New home communities</li>
+                    <li><span class="feature-icon">✓</span> Pre-construction sales</li>
+                    <li><span class="feature-icon">✓</span> Builder incentives</li>
+                    <li><span class="feature-icon">✓</span> Customization options</li>
+                    <li><span class="feature-icon">✓</span> Warranty coverage</li>
+                </ul>
+                <div class="price-range">$200K - $2M</div>
+                <button class="cta-button" onclick="exploreOption('new-construction')">Explore New Builds</button>
+            </div>
+
+            <div class="option-card">
+                <div class="option-header">
+                    <div class="option-icon vacation">🏖️</div>
+                    <div>
+                        <div class="option-title">Vacation Homes</div>
+                        <div class="option-subtitle">Second homes & retreats</div>
+                    </div>
+                </div>
+                <ul class="option-features">
+                    <li><span class="feature-icon">✓</span> Beach & mountain properties</li>
+                    <li><span class="feature-icon">✓</span> Vacation rental potential</li>
+                    <li><span class="feature-icon">✓</span> Resort communities</li>
+                    <li><span class="feature-icon">✓</span> Seasonal market analysis</li>
+                    <li><span class="feature-icon">✓</span> Property management</li>
+                </ul>
+                <div class="price-range">$300K - $3M</div>
+                <button class="cta-button" onclick="exploreOption('vacation')">Explore Vacation</button>
+            </div>
+        </div>
+
+        <div class="ai-features">
+            <h2>🚀 Agent & Broker Solutions</h2>
+            <div class="ai-grid">
+                <div class="ai-feature">
+                    <div class="ai-feature-icon">📈</div>
+                    <h3>Lead Generation & CRM</h3>
+                    <p>Automated lead capture, scoring, and nurturing system. Never lose a prospect again with intelligent follow-up sequences.</p>
+                </div>
+                <div class="ai-feature">
+                    <div class="ai-feature-icon">📅</div>
+                    <h3>Smart Scheduling</h3>
+                    <p>AI-powered appointment booking that syncs with your calendar. Reduces no-shows by 40% with automated reminders.</p>
+                </div>
+                <div class="ai-feature">
+                    <div class="ai-feature-icon">📊</div>
+                    <h3>Market Intelligence</h3>
+                    <p>Real-time market analysis, pricing strategies, and competitive insights. Make data-driven decisions that close more deals.</p>
+                </div>
+                <div class="ai-feature">
+                    <div class="ai-feature-icon">🎯</div>
+                    <h3>Client Matching</h3>
+                    <p>AI matches your listings with qualified buyers instantly. Reduce time-to-sale and increase commission potential.</p>
+                </div>
+                <div class="ai-feature">
+                    <div class="ai-feature-icon">📱</div>
+                    <h3>Marketing Automation</h3>
+                    <p>Automated social media posts, email campaigns, and listing syndication. Focus on selling while AI handles marketing.</p>
+                </div>
+                <div class="ai-feature">
+                    <div class="ai-feature-icon">💼</div>
+                    <h3>Transaction Management</h3>
+                    <p>Streamlined document management, e-signatures, and compliance tracking. Close deals faster with less paperwork.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Rate limiter for explore requests
+        const exploreRateLimiter = window.securityEnhancer ? 
+            window.securityEnhancer.createRateLimiter(10, 60000) : // 10 requests per minute
+            () => true;
+            
+        // Enhanced functionality with better user feedback
+        function exploreOption(type) {
+            // Validate input to prevent injection attacks
+            if (window.securityEnhancer) {
+                if (!window.securityEnhancer.validateSQLInjection(type) || 
+                    !window.securityEnhancer.validatePromptInjection(type)) {
+                    window.securityEnhancer.showSecurityWarning('Invalid option request detected.');
+                    return;
+                }
+            }
+            
+            // Check rate limiting
+            if (!exploreRateLimiter()) {
+                if (window.securityEnhancer) {
+                    window.securityEnhancer.showSecurityWarning('Too many requests. Please wait before exploring again.');
+                }
+                return;
+            }
+            
+            const button = event.target;
+            const card = button.closest('.option-card');
+            
+            // Disable button and show loading state
+            button.disabled = true;
+            button.style.opacity = '0.7';
+            button.innerHTML = '🔍 Analyzing...';
+            
+            const messages = {
+                'residential': 'Analyzing residential market opportunities for agents... AI identifying high-potential leads!',
+                'commercial': 'Processing commercial market data... Finding lucrative opportunities for your portfolio!',
+                'luxury': 'Scanning luxury market trends... Identifying high-commission opportunities!',
+                'investment': 'Calculating investment market potential... Finding properties with best ROI for clients!',
+                'new-construction': 'Analyzing new construction market... Identifying builder partnerships and lead opportunities!',
+                'vacation': 'Processing vacation property market... Finding seasonal opportunities and rental potential!'
+            };
+            
+            // Show initial message
+            showNotification(messages[type] || 'Analyzing real estate market opportunities...', 'info');
+            
+            // Simulate AI processing with progress
+            setTimeout(() => {
+                button.innerHTML = '🤖 AI Processing...';
+                showNotification('AI analyzing market data, commission potential, and qualified leads...', 'processing');
+            }, 1000);
+            
+            setTimeout(() => {
+                const propertyCount = Math.floor(Math.random() * 50) + 20;
+                const avgPrice = getAveragePrice(type);
+                const commission = getCommissionEstimate(type);
+                const leads = Math.floor(Math.random() * 30) + 15;
+                
+                button.innerHTML = '✅ Analysis Complete';
+                button.style.background = 'linear-gradient(135deg, #27ae60 0%, #2ecc71 100%)';
+                
+                showNotification(
+                    `🎯 Market Analysis Complete! ${propertyCount} active listings, Avg. Commission: ${commission}, ${leads} qualified leads ready. Boost your sales pipeline now!`,
+                    'success'
+                );
+                
+                // Show detailed results instead of resetting
+                showDetailedResults(type, propertyCount, avgPrice, commission, leads, button);
+            }, 3000);
+        }
+        
+        function getAveragePrice(type) {
+            const prices = {
+                'residential': '$425K',
+                'commercial': '$2.8M',
+                'luxury': '$8.5M',
+                'investment': '$650K',
+                'new-construction': '$485K',
+                'vacation': '$750K'
+            };
+            return prices[type] || '$500K';
+        }
+        
+        function getCommissionEstimate(type) {
+            const commissions = {
+                'residential': '$12,750',
+                'commercial': '$84,000',
+                'luxury': '$255,000',
+                'investment': '$19,500',
+                'new-construction': '$14,550',
+                'vacation': '$22,500'
+            };
+            return commissions[type] || '$15,000';
+        }
+        
+        function showDetailedResults(type, propertyCount, avgPrice, commission, leads, button) {
+            // Change button to "View Details" state
+            button.innerHTML = '📊 View Details';
+            button.style.background = 'linear-gradient(135deg, #27ae60 0%, #2ecc71 100%)';
+            button.disabled = false;
+            
+            // Create or update results panel
+            let resultsPanel = document.getElementById(`results-${type}`);
+            if (!resultsPanel) {
+                resultsPanel = document.createElement('div');
+                resultsPanel.id = `results-${type}`;
+                resultsPanel.className = 'results-panel';
+                button.parentElement.appendChild(resultsPanel);
+            }
+            
+            // Generate sample listings
+            const sampleListings = generateSampleListings(type, propertyCount);
+            
+            resultsPanel.innerHTML = `
+                <div class="results-header">
+                    <h3>🏠 ${type.charAt(0).toUpperCase() + type.slice(1).replace('-', ' ')} Market Analysis</h3>
+                    <button class="close-results" onclick="closeResults('${type}', this)">✕</button>
+                </div>
+                <div class="results-stats">
+                    <div class="stat-item">
+                        <span class="stat-number">${propertyCount}</span>
+                        <span class="stat-label">Active Listings</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">${avgPrice}</span>
+                        <span class="stat-label">Avg. Price</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">${commission}</span>
+                        <span class="stat-label">Avg. Commission</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">${leads}</span>
+                        <span class="stat-label">Qualified Leads</span>
+                    </div>
+                </div>
+                <div class="sample-listings">
+                    <h4>📋 Sample Listings</h4>
+                    ${sampleListings}
+                </div>
+                <div class="action-buttons">
+                    <button class="action-btn primary" onclick="contactLeads('${type}')">
+                        📞 Contact Leads
+                    </button>
+                    <button class="action-btn secondary" onclick="scheduleShowings('${type}')">
+                        📅 Schedule Showings
+                    </button>
+                    <button class="action-btn tertiary" onclick="generateReport('${type}')">
+                        📊 Generate Report
+                    </button>
+                </div>
+            `;
+            
+            // Animate panel appearance
+            resultsPanel.style.maxHeight = '0';
+            resultsPanel.style.opacity = '0';
+            setTimeout(() => {
+                resultsPanel.style.maxHeight = '800px';
+                resultsPanel.style.opacity = '1';
+            }, 100);
+        }
+        
+        function generateSampleListings(type, count) {
+            const listings = {
+                'residential': [
+                    { address: '123 Oak Street', price: '$425,000', beds: 3, baths: 2, sqft: '1,850' },
+                    { address: '456 Maple Ave', price: '$389,000', beds: 4, baths: 2, sqft: '2,100' },
+                    { address: '789 Pine Road', price: '$465,000', beds: 3, baths: 3, sqft: '1,950' }
+                ],
+                'commercial': [
+                    { address: '100 Business Blvd', price: '$2.8M', type: 'Office Building', sqft: '15,000' },
+                    { address: '200 Commerce St', price: '$1.9M', type: 'Retail Space', sqft: '8,500' },
+                    { address: '300 Industrial Way', price: '$3.2M', type: 'Warehouse', sqft: '25,000' }
+                ],
+                'luxury': [
+                    { address: '1 Mansion Drive', price: '$8.5M', beds: 6, baths: 7, sqft: '8,500' },
+                    { address: '2 Estate Lane', price: '$6.2M', beds: 5, baths: 6, sqft: '6,800' },
+                    { address: '3 Prestige Court', price: '$12.1M', beds: 7, baths: 9, sqft: '12,000' }
+                ],
+                'investment': [
+                    { address: '500 Rental Row', price: '$650K', roi: '8.5%', type: 'Duplex', sqft: '2,400' },
+                    { address: '600 Income Ave', price: '$580K', roi: '9.2%', type: 'Triplex', sqft: '3,200' },
+                    { address: '700 Cash St', price: '$720K', roi: '7.8%', type: 'Fourplex', sqft: '4,100' }
+                ],
+                'new-construction': [
+                    { address: '800 New Home Dr', price: '$485K', builder: 'Premier Homes', completion: 'Q2 2024', sqft: '2,200' },
+                    { address: '900 Fresh Start St', price: '$520K', builder: 'Modern Living', completion: 'Q3 2024', sqft: '2,450' },
+                    { address: '1000 Brand New Blvd', price: '$445K', builder: 'Future Builds', completion: 'Q1 2024', sqft: '1,980' }
+                ],
+                'vacation': [
+                    { address: '100 Beach House Rd', price: '$750K', type: 'Beachfront', beds: 4, baths: 3, sqft: '2,800' },
+                    { address: '200 Mountain View Dr', price: '$680K', type: 'Ski Lodge', beds: 3, baths: 2, sqft: '2,200' },
+                    { address: '300 Lake Shore Ln', price: '$820K', type: 'Lakefront', beds: 5, baths: 4, sqft: '3,100' }
+                ]
+            };
+            
+            const typeListings = listings[type] || listings['residential'];
+            return typeListings.map(listing => {
+                if (type === 'commercial') {
+                    return `
+                        <div class="listing-item">
+                            <div class="listing-address">${listing.address}</div>
+                            <div class="listing-details">
+                                <span class="price">${listing.price}</span>
+                                <span class="detail">${listing.type}</span>
+                                <span class="detail">${listing.sqft} sq ft</span>
+                            </div>
+                        </div>
+                    `;
+                } else if (type === 'investment') {
+                    return `
+                        <div class="listing-item">
+                            <div class="listing-address">${listing.address}</div>
+                            <div class="listing-details">
+                                <span class="price">${listing.price}</span>
+                                <span class="detail">ROI: ${listing.roi}</span>
+                                <span class="detail">${listing.type}</span>
+                            </div>
+                        </div>
+                    `;
+                } else if (type === 'new-construction') {
+                    return `
+                        <div class="listing-item">
+                            <div class="listing-address">${listing.address}</div>
+                            <div class="listing-details">
+                                <span class="price">${listing.price}</span>
+                                <span class="detail">${listing.builder}</span>
+                                <span class="detail">Ready: ${listing.completion}</span>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    return `
+                        <div class="listing-item">
+                            <div class="listing-address">${listing.address}</div>
+                            <div class="listing-details">
+                                <span class="price">${listing.price}</span>
+                                <span class="detail">${listing.beds || 'N/A'} bed, ${listing.baths || 'N/A'} bath</span>
+                                <span class="detail">${listing.sqft} sq ft</span>
+                            </div>
+                        </div>
+                    `;
+                }
+            }).join('');
+        }
+        
+        function closeResults(type, button) {
+            const resultsPanel = document.getElementById(`results-${type}`);
+            const exploreButton = button.closest('.option-card').querySelector('.cta-button');
+            
+            if (resultsPanel) {
+                resultsPanel.style.maxHeight = '0';
+                resultsPanel.style.opacity = '0';
+                setTimeout(() => {
+                    resultsPanel.remove();
+                }, 300);
+            }
+            
+            // Reset explore button
+            resetButton(exploreButton, type);
+        }
+        
+        function contactLeads(type) {
+            // Validate and sanitize input
+            if (window.securityEnhancer) {
+                if (!window.securityEnhancer.validateSQLInjection(type) || 
+                    !window.securityEnhancer.validatePromptInjection(type)) {
+                    window.securityEnhancer.showSecurityWarning('Invalid request detected.');
+                    return;
+                }
+                type = window.securityEnhancer.sanitizeInput(type);
+            }
+            
+            showNotification(`📞 Initiating contact with qualified ${type.replace('-', ' ')} leads. CRM system activated!`, 'success');
+        }
+        
+        function scheduleShowings(type) {
+            // Validate and sanitize input
+            if (window.securityEnhancer) {
+                if (!window.securityEnhancer.validateSQLInjection(type) || 
+                    !window.securityEnhancer.validatePromptInjection(type)) {
+                    window.securityEnhancer.showSecurityWarning('Invalid request detected.');
+                    return;
+                }
+                type = window.securityEnhancer.sanitizeInput(type);
+            }
+            
+            showNotification(`📅 Smart scheduling activated for ${type.replace('-', ' ')} properties. Calendar integration ready!`, 'success');
+        }
+        
+        function generateReport(type) {
+            // Validate and sanitize input
+            if (window.securityEnhancer) {
+                if (!window.securityEnhancer.validateSQLInjection(type) || 
+                    !window.securityEnhancer.validatePromptInjection(type)) {
+                    window.securityEnhancer.showSecurityWarning('Invalid request detected.');
+                    return;
+                }
+                type = window.securityEnhancer.sanitizeInput(type);
+            }
+            
+            showNotification(`📊 Generating comprehensive ${type.replace('-', ' ')} market report with AI insights...`, 'processing');
+        }
+        
+        function resetButton(button, type) {
+            const originalTexts = {
+                'residential': 'Explore Residential',
+                'commercial': 'Explore Commercial',
+                'luxury': 'Explore Luxury',
+                'investment': 'Explore Investment',
+                'new-construction': 'Explore New Builds',
+                'vacation': 'Explore Vacation'
+            };
+            
+            button.disabled = false;
+            button.style.opacity = '1';
+            button.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+            button.innerHTML = originalTexts[type] || 'Explore Options';
+        }
+        
+        function showNotification(message, type) {
+            // Sanitize message content
+            const sanitizedMessage = window.securityEnhancer ? 
+                window.securityEnhancer.sanitizeInput(message) : message;
+                
+            // Remove existing notifications
+            const existingNotifications = document.querySelectorAll('.notification');
+            existingNotifications.forEach(notification => notification.remove());
+            
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            
+            const notificationContent = document.createElement('div');
+            notificationContent.className = 'notification-content';
+            
+            const messageSpan = document.createElement('span');
+            messageSpan.className = 'notification-message';
+            
+            if (messageSpan.setSafeHTML) {
+                messageSpan.setSafeHTML(sanitizedMessage);
+            } else {
+                messageSpan.textContent = sanitizedMessage;
+            }
+            
+            const closeButton = document.createElement('button');
+            closeButton.className = 'notification-close';
+            closeButton.textContent = '×';
+            closeButton.onclick = () => notification.remove();
+            
+            notificationContent.appendChild(messageSpan);
+            notificationContent.appendChild(closeButton);
+            notification.appendChild(notificationContent);
+            
+            document.body.appendChild(notification);
+            
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.remove();
+                }
+            }, 5000);
+        }
+        
+        // Add click handlers for AI features
+        function initializeAIFeatures() {
+            const aiFeatures = document.querySelectorAll('.ai-feature');
+            aiFeatures.forEach((feature, index) => {
+                feature.style.cursor = 'pointer';
+                feature.addEventListener('click', function() {
+                    const featureTitle = this.querySelector('h3').textContent;
+                    const featureDesc = this.querySelector('p').textContent;
+                    
+                    showNotification(
+                        `🚀 ${featureTitle}: ${featureDesc} - Coming soon in our full platform!`,
+                        'info'
+                    );
+                    
+                    // Add visual feedback
+                    this.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        this.style.transform = 'scale(1)';
+                    }, 150);
+                });
+            });
+        }
+        
+        // Authentication check - redirect to login if not authenticated
+        function checkAuthentication() {
+            const user = localStorage.getItem('da_realest_geek_user');
+            if (!user) {
+                window.location.href = 'login.html';
+                return false;
+            }
+            
+            try {
+                const userData = JSON.parse(user);
+                const loginTime = new Date(userData.loginTime);
+                const now = new Date();
+                const hoursSinceLogin = (now - loginTime) / (1000 * 60 * 60);
+                
+                if (hoursSinceLogin > 24) {
+                    localStorage.removeItem('da_realest_geek_user');
+                    window.location.href = 'login.html';
+                    return false;
+                }
+                
+                displayWelcomeMessage(userData.name);
+                return true;
+            } catch (e) {
+                localStorage.removeItem('da_realest_geek_user');
+                window.location.href = 'login.html';
+                return false;
+            }
+        }
+        
+        function displayWelcomeMessage(userName) {
+            const header = document.querySelector('.header');
+            const welcomeDiv = document.createElement('div');
+            welcomeDiv.style.cssText = `
+                background: rgba(255,255,255,0.2);
+                padding: 10px 20px;
+                border-radius: 25px;
+                margin-top: 15px;
+                backdrop-filter: blur(10px);
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                max-width: 350px;
+                margin-left: auto;
+                margin-right: auto;
+            `;
+            
+            welcomeDiv.innerHTML = `
+                <span>Welcome, ${userName}!</span>
+                <button onclick="logout()" style="
+                    background: rgba(255,255,255,0.3);
+                    border: none;
+                    color: white;
+                    padding: 5px 15px;
+                    border-radius: 15px;
+                    cursor: pointer;
+                    font-weight: 600;
+                ">Logout</button>
+            `;
+            
+            header.appendChild(welcomeDiv);
+        }
+        
+        function logout() {
+            localStorage.removeItem('da_realest_geek_user');
+            window.location.href = 'login.html';
+        }
+        
+        // Check authentication on page load
+        if (!checkAuthentication()) {
+            throw new Error('Authentication required');
+        }
+
+        // Enhanced animations and interactions
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.option-card');
+            
+            // Animate cards on load
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+                
+                setTimeout(() => {
+                    card.style.transition = 'all 0.6s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+            
+            // Initialize AI features
+            initializeAIFeatures();
+            
+            // Add keyboard navigation
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    const notifications = document.querySelectorAll('.notification');
+                    notifications.forEach(notification => notification.remove());
+                }
+            });
+        });
+    </script>
+</body>
+</html>
