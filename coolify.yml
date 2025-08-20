@@ -1,52 +1,37 @@
-# Coolify Deployment Configuration for daRealestGeek
-# Static Site Deployment
+# Coolify Static Site Configuration
+# daRealestGeek - AI-Powered Real Estate Platform
 
-version: '1.0'
-
-project:
-  name: darealestgeek
-  description: "AI-Powered Real Estate Lead Generation Platform - Static Site"
+# Static site deployment using Dockerfile
+type: "dockerfile"
+build:
+  dockerfile: "Dockerfile"
+  context: "."
   
-services:
-  # Static Web Application
-  web:
-    image: nginx:alpine
-    volumes:
-      - .:/usr/share/nginx/html:ro
-      - ./nginx.conf:/etc/nginx/nginx.conf:ro
-    ports:
-      - "80:80"
-      - "443:443"
-    restart: unless-stopped
-    deploy:
-      replicas: 1
-      resources:
-        limits:
-          memory: 128M
-          cpus: '0.25'
-        reservations:
-          memory: 64M
-          cpus: '0.1'
+# Environment variables
+environment:
+  NODE_ENV: "production"
+  
+# Health check
+healthcheck:
+  test: ["CMD", "curl", "-f", "http://localhost:80/"]
+  interval: 30s
+  timeout: 10s
+  retries: 3
+  start_period: 40s
 
-# Coolify-specific configurations
-coolify:
-  # Domain configuration
-  domains:
-    - name: "darealestgeek.com"
-      service: web
-      port: 80
-      ssl: true
-      
-  # Build configuration for static site
-  build:
-    type: "static"
-    publish_directory: "/"
-    
-  # Monitoring
-  monitoring:
-    enabled: true
-    alerts:
-      - type: "health_check_failed"
-        threshold: 3
-      - type: "high_memory_usage"
-        threshold: 90
+# Resource limits
+resources:
+  limits:
+    memory: "256M"
+    cpus: "0.5"
+  reservations:
+    memory: "128M"
+    cpus: "0.25"
+
+# Restart policy
+restart: "unless-stopped"
+
+# Port mapping
+ports:
+  - "80:80"
+  - "443:443"
