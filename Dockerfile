@@ -1,8 +1,17 @@
-# Simple Dockerfile for static HTML site
+# Static HTML site deployment with Nginx
 FROM nginx:alpine
 
-# Copy static files to nginx html directory
-COPY . /usr/share/nginx/html/
+# Install curl for health checks
+RUN apk add --no-cache curl
+
+# Copy only static files (exclude node_modules, apps directory, etc.)
+COPY *.html /usr/share/nginx/html/
+COPY *.svg /usr/share/nginx/html/
+COPY *.js /usr/share/nginx/html/
+COPY *.css /usr/share/nginx/html/ 2>/dev/null || true
+COPY *.png /usr/share/nginx/html/ 2>/dev/null || true
+COPY *.jpg /usr/share/nginx/html/ 2>/dev/null || true
+COPY *.ico /usr/share/nginx/html/ 2>/dev/null || true
 
 # Copy custom nginx configuration
 COPY nginx.conf /etc/nginx/nginx.conf
@@ -27,7 +36,7 @@ EXPOSE 80 443 8080
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:8080/health || exit 1
+    CMD curl -f http://localhost:80/ || exit 1
 
 # Start nginx
 CMD ["nginx", "-g", "daemon off;"]
