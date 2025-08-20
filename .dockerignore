@@ -1,8 +1,11 @@
 # Exclude Node.js related files and directories
 node_modules/
 package.json
+package.json.bak
 package-lock.json
 yarn.lock
+turbo.json
+turbo.json.bak
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
