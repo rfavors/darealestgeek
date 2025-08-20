@@ -1,109 +1,22 @@
 # Coolify Deployment Configuration for daRealestGeek
-# This file defines the deployment strategy for Coolify VPS
+# Static Site Deployment
 
 version: '1.0'
 
 project:
   name: darealestgeek
-  description: "AI-Powered Real Estate SaaS Platform"
+  description: "AI-Powered Real Estate Lead Generation Platform - Static Site"
   
 services:
-  # PostgreSQL Database
-  postgres:
-    image: postgres:15-alpine
-    environment:
-      POSTGRES_DB: ${DATABASE_NAME}
-      POSTGRES_USER: ${DATABASE_USER}
-      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
-      PGDATA: /var/lib/postgresql/data/pgdata
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DATABASE_USER}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    restart: unless-stopped
-    
-  # Redis Cache
-  redis:
-    image: redis:7-alpine
-    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD}
-    volumes:
-      - redis_data:/data
-    healthcheck:
-      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
-      interval: 10s
-      timeout: 3s
-      retries: 5
-    restart: unless-stopped
-
-  # Backend API Service
-  api:
-    build:
-      context: .
-      dockerfile: apps/api/Dockerfile
-    environment:
-      NODE_ENV: production
-      DATABASE_URL: postgresql://${DATABASE_USER}:${DATABASE_PASSWORD}@postgres:5432/${DATABASE_NAME}
-      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379
-    depends_on:
-      - postgres
-      - redis
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-    restart: unless-stopped
-    deploy:
-      replicas: 2
-      resources:
-        limits:
-          memory: 1G
-          cpus: '0.5'
-        reservations:
-          memory: 512M
-          cpus: '0.25'
-
-  # Frontend Web Application
+  # Static Web Application
   web:
-    build:
-      context: .
-      dockerfile: apps/web/Dockerfile
-    environment:
-      NODE_ENV: production
-      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
-      NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL}
-    depends_on:
-      - api
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-    restart: unless-stopped
-    deploy:
-      replicas: 2
-      resources:
-        limits:
-          memory: 512M
-          cpus: '0.5'
-        reservations:
-          memory: 256M
-          cpus: '0.25'
-
-  # Nginx Reverse Proxy
-  nginx:
     image: nginx:alpine
     volumes:
+      - .:/usr/share/nginx/html:ro
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
     ports:
       - "80:80"
       - "443:443"
-    depends_on:
-      - web
-      - api
     restart: unless-stopped
     deploy:
       replicas: 1
@@ -111,40 +24,24 @@ services:
         limits:
           memory: 128M
           cpus: '0.25'
-
-volumes:
-  postgres_data:
-    driver: local
-  redis_data:
-    driver: local
+        reservations:
+          memory: 64M
+          cpus: '0.1'
 
 # Coolify-specific configurations
 coolify:
   # Domain configuration
   domains:
-    - name: "${DOMAIN_NAME}"
-      service: nginx
+    - name: "darealestgeek.com"
+      service: web
       port: 80
       ssl: true
       
-  # Environment variables that Coolify should manage
-  secrets:
-    - DATABASE_PASSWORD
-    - REDIS_PASSWORD
-    - JWT_SECRET
-    - OPENAI_API_KEY
-    - STRIPE_SECRET_KEY
-    - AUTH0_CLIENT_SECRET
-    - AWS_SECRET_ACCESS_KEY
-    - TWILIO_AUTH_TOKEN
-    - SENDGRID_API_KEY
+  # Build configuration for static site
+  build:
+    type: "static"
+    publish_directory: "/"
     
-  # Backup configuration
-  backups:
-    postgres:
-      schedule: "0 2 * * *"  # Daily at 2 AM
-      retention: 7  # Keep 7 days of backups
-      
   # Monitoring
   monitoring:
     enabled: true
@@ -153,16 +50,3 @@ coolify:
         threshold: 3
       - type: "high_memory_usage"
         threshold: 90
-      - type: "high_cpu_usage"
-        threshold: 80
-        
-  # Auto-scaling (if supported)
-  scaling:
-    api:
-      min_replicas: 1
-      max_replicas: 4
-      target_cpu: 70
-    web:
-      min_replicas: 1
-      max_replicas: 3
-      target_cpu: 70
