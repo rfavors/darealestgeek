@@ -13,6 +13,79 @@
             padding: 20px;
             min-height: 100vh;
         }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: #FFD700;
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+        
+        .nav-links a:hover {
+            color: #FFD700;
+            background: rgba(255, 215, 0, 0.1);
+        }
+        
+        .nav-links a:hover::after {
+            width: 80%;
+        }
+
+        @media (max-width: 768px) {
+            .nav {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .nav-links {
+                gap: 15px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .nav-links a {
+                padding: 0.3rem 0.8rem;
+                font-size: 0.9rem;
+            }
+        }
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -106,6 +179,24 @@
     </style>
 </head>
 <body>
+    <!-- Navigation -->
+    <header class="header-nav">
+        <div class="container">
+            <nav class="nav">
+                <div class="logo">
+                    🏠 da Realest Geek
+                </div>
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="real-estate-options.html">Options</a></li>
+                    <li><a href="agent-pain-points.html">Solutions</a></li>
+                    <li><a href="demo.html">Demo</a></li>
+                    <li><a href="login.html">Login</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
     <div class="container">
         <div class="header">
             <h1>🛡️ da Realest Geek Security Suite</h1>

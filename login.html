@@ -16,10 +16,53 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
+            padding: 20px;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+        }
+        
+        .nav-links a:hover {
+            color: #FFD700;
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        .login-wrapper {
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            min-height: calc(100vh - 120px);
         }
 
         .login-container {
@@ -174,6 +217,24 @@
             to { transform: rotate(360deg); }
         }
 
+        @media (max-width: 768px) {
+            .nav {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .nav-links {
+                gap: 15px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .nav-links a {
+                padding: 0.3rem 0.8rem;
+                font-size: 0.9rem;
+            }
+        }
+
         @media (max-width: 480px) {
             .login-container {
                 margin: 10px;
@@ -190,7 +251,23 @@
     </style>
 </head>
 <body>
-    <div class="login-container">
+    <!-- Navigation -->
+    <header class="header-nav">
+        <nav class="nav">
+            <div class="logo">
+                🏠 da Realest Geek
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="real-estate-options.html">Options</a></li>
+                <li><a href="agent-pain-points.html">Solutions</a></li>
+                <li><a href="demo.html">Demo</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="login-wrapper">
+        <div class="login-container">
         <div class="login-header">
             <h1>da Realest Geek</h1>
             <p>Member Access Portal</p>
@@ -227,6 +304,7 @@
                 <p>Don't have an account? <a href="#" onclick="showSignup()">Sign up here</a></p>
             </div>
         </div>
+    </div>
     </div>
 
     <script>
