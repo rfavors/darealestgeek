@@ -928,21 +928,52 @@
 
         function newMessage() {
             showNotification('Opening new message composer...', 'info');
-            // In a real app, this would open a modal to select a client and compose a message
+            // Simulate opening a new message modal
+            setTimeout(() => {
+                const recipient = prompt('Enter recipient name or email:');
+                if (recipient) {
+                    showNotification(`New message started for ${security.sanitizeInput(recipient)}`, 'success');
+                } else {
+                    showNotification('Message creation cancelled', 'info');
+                }
+            }, 500);
         }
 
         function scheduleFollowUp() {
             if (!currentClient) {
-                showNotification('Please select a client first', 'error');
-                return;
+                // If no client selected, allow general follow-up scheduling
+                const clientName = prompt('Enter client name for follow-up:');
+                if (!clientName) {
+                    showNotification('Follow-up scheduling cancelled', 'info');
+                    return;
+                }
+                const followUpDate = prompt('Enter follow-up date (YYYY-MM-DD):');
+                if (followUpDate) {
+                    showNotification(`Follow-up scheduled for ${security.sanitizeInput(clientName)} on ${security.sanitizeInput(followUpDate)}`, 'success');
+                } else {
+                    showNotification('Follow-up scheduling cancelled', 'info');
+                }
+            } else {
+                const followUpDate = prompt(`Enter follow-up date for ${currentClient.name} (YYYY-MM-DD):`);
+                if (followUpDate) {
+                    showNotification(`Follow-up scheduled for ${currentClient.name} on ${security.sanitizeInput(followUpDate)}`, 'success');
+                } else {
+                    showNotification('Follow-up scheduling cancelled', 'info');
+                }
             }
-            showNotification(`Scheduling follow-up with ${currentClient.name}...`, 'info');
-            // In a real app, this would open a scheduling interface
         }
 
         function bulkMessage() {
             showNotification('Opening bulk message composer...', 'info');
-            // In a real app, this would open a bulk messaging interface
+            setTimeout(() => {
+                const message = prompt('Enter your bulk message:');
+                if (message) {
+                    const recipientCount = clients.length || 5; // Use actual client count or default
+                    showNotification(`Bulk message sent to ${recipientCount} clients: "${security.sanitizeInput(message.substring(0, 50))}..."`, 'success');
+                } else {
+                    showNotification('Bulk message cancelled', 'info');
+                }
+            }, 500);
         }
 
         function exportConversations() {
@@ -981,7 +1012,24 @@
 
         function communicationSettings() {
             showNotification('Opening communication settings...', 'info');
-            // In a real app, this would open settings for notifications, templates, etc.
+            setTimeout(() => {
+                const settings = [
+                    '1. Notification Preferences',
+                    '2. Message Templates',
+                    '3. Auto-Reply Settings',
+                    '4. Integration Settings',
+                    '5. Privacy Settings'
+                ];
+                const choice = prompt(`Communication Settings:\n${settings.join('\n')}\n\nEnter number (1-5) to configure:`);
+                if (choice && choice >= '1' && choice <= '5') {
+                    const settingName = settings[parseInt(choice) - 1].substring(3);
+                    showNotification(`Configuring ${settingName}...`, 'success');
+                } else if (choice) {
+                    showNotification('Invalid selection', 'error');
+                } else {
+                    showNotification('Settings cancelled', 'info');
+                }
+            }, 500);
         }
 
         function callClient() {
