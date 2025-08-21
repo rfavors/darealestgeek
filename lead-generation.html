@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lead Generation - da Realest Geek</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/modern-styles.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #764ba2;
+        }
+
+        .page-title {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .page-title h1 {
+            font-size: 32px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .page-title p {
+            color: #666;
+            font-size: 18px;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .card h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn.secondary {
+            background: #f8f9fa;
+            color: #333;
+            border: 2px solid #e9ecef;
+        }
+
+        .btn.secondary:hover {
+            background: #e9ecef;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .stat-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            border-left: 4px solid #667eea;
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .lead-sources {
+            list-style: none;
+        }
+
+        .source-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .source-name {
+            font-weight: 500;
+        }
+
+        .source-count {
+            background: #667eea;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .leads-table {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .search-filter {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .search-input {
+            padding: 8px 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .filter-select {
+            padding: 8px 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .leads-grid {
+            display: grid;
+            gap: 15px;
+        }
+
+        .lead-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            border-left: 4px solid #667eea;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .lead-card:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .lead-card.hot {
+            border-left-color: #ff4757;
+        }
+
+        .lead-card.warm {
+            border-left-color: #ffa502;
+        }
+
+        .lead-card.cold {
+            border-left-color: #70a1ff;
+        }
+
+        .lead-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .lead-name {
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .lead-score {
+            background: #667eea;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .lead-score.hot {
+            background: #ff4757;
+        }
+
+        .lead-score.warm {
+            background: #ffa502;
+        }
+
+        .lead-score.cold {
+            background: #70a1ff;
+        }
+
+        .lead-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .lead-detail {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .lead-detail strong {
+            color: #333;
+        }
+
+        .lead-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .action-btn:hover {
+            background: #5a6fd8;
+        }
+
+        .action-btn.call {
+            background: #4CAF50;
+        }
+
+        .action-btn.email {
+            background: #2196F3;
+        }
+
+        .action-btn.schedule {
+            background: #FF9800;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 600px;
+            margin: 50px auto;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            z-index: 1000;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success { background: #4CAF50; }
+        .notification.error { background: #f44336; }
+        .notification.info { background: #2196F3; }
+
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 10px;
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .search-filter {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .search-input,
+            .filter-select {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-users"></i> Lead Generation
+            </div>
+            <nav class="nav-links">
+                <a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a>
+                <a href="email-campaigns.html"><i class="fas fa-envelope"></i> Campaigns</a>
+                <a href="appointments.html"><i class="fas fa-calendar"></i> Calendar</a>
+                <a href="analytics.html"><i class="fas fa-chart-line"></i> Analytics</a>
+                <button class="btn secondary" onclick="logout()" style="width: auto; margin: 0; padding: 8px 16px;">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </nav>
+        </header>
+
+        <section class="page-title">
+            <h1>Lead Generation & CRM</h1>
+            <p>Capture, qualify, and nurture your real estate leads</p>
+        </section>
+
+        <div class="dashboard-grid">
+            <div class="sidebar">
+                <div class="card">
+                    <h3>Quick Actions</h3>
+                    <button class="btn" onclick="addNewLead()">
+                        <i class="fas fa-plus"></i> Add New Lead
+                    </button>
+                    <button class="btn secondary" onclick="importLeads()">
+                        <i class="fas fa-upload"></i> Import Leads
+                    </button>
+                    <button class="btn secondary" onclick="exportLeads()">
+                        <i class="fas fa-download"></i> Export Leads
+                    </button>
+                    <button class="btn secondary" onclick="setupAutomation()">
+                        <i class="fas fa-robot"></i> Setup Automation
+                    </button>
+                </div>
+
+                <div class="card">
+                    <h3>Lead Statistics</h3>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number" id="totalLeads">247</div>
+                            <div class="stat-label">Total Leads</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="hotLeads">23</div>
+                            <div class="stat-label">Hot Leads</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="conversionRate">15%</div>
+                            <div class="stat-label">Conversion Rate</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="avgResponseTime">2.3h</div>
+                            <div class="stat-label">Avg Response Time</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Lead Sources</h3>
+                    <ul class="lead-sources">
+                        <li class="source-item">
+                            <span class="source-name">Website Forms</span>
+                            <span class="source-count">89</span>
+                        </li>
+                        <li class="source-item">
+                            <span class="source-name">Social Media</span>
+                            <span class="source-count">67</span>
+                        </li>
+                        <li class="source-item">
+                            <span class="source-name">Referrals</span>
+                            <span class="source-count">45</span>
+                        </li>
+                        <li class="source-item">
+                            <span class="source-name">Open Houses</span>
+                            <span class="source-count">32</span>
+                        </li>
+                        <li class="source-item">
+                            <span class="source-name">Cold Calls</span>
+                            <span class="source-count">14</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="main-content">
+                <div class="leads-table">
+                    <div class="table-header">
+                        <h3>Lead Management</h3>
+                        <div class="search-filter">
+                            <input type="text" class="search-input" placeholder="Search leads..." id="searchInput" onkeyup="filterLeads()">
+                            <select class="filter-select" id="statusFilter" onchange="filterLeads()">
+                                <option value="all">All Leads</option>
+                                <option value="hot">Hot Leads</option>
+                                <option value="warm">Warm Leads</option>
+                                <option value="cold">Cold Leads</option>
+                                <option value="converted">Converted</option>
+                            </select>
+                            <select class="filter-select" id="sourceFilter" onchange="filterLeads()">
+                                <option value="all">All Sources</option>
+                                <option value="website">Website</option>
+                                <option value="social">Social Media</option>
+                                <option value="referral">Referrals</option>
+                                <option value="openhouse">Open House</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="leads-grid" id="leadsGrid">
+                        <!-- Lead cards will be dynamically generated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Lead Modal -->
+    <div id="addLeadModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add New Lead</h3>
+                <button class="close-btn" onclick="closeModal('addLeadModal')">&times;</button>
+            </div>
+            <form id="addLeadForm">
+                <div class="form-group">
+                    <label for="leadName">Full Name</label>
+                    <input type="text" id="leadName" required>
+                </div>
+                <div class="form-group">
+                    <label for="leadEmail">Email</label>
+                    <input type="email" id="leadEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="leadPhone">Phone</label>
+                    <input type="tel" id="leadPhone">
+                </div>
+                <div class="form-group">
+                    <label for="leadSource">Lead Source</label>
+                    <select id="leadSource">
+                        <option value="website">Website Form</option>
+                        <option value="social">Social Media</option>
+                        <option value="referral">Referral</option>
+                        <option value="openhouse">Open House</option>
+                        <option value="coldcall">Cold Call</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="leadInterest">Property Interest</label>
+                    <select id="leadInterest">
+                        <option value="buying">Buying</option>
+                        <option value="selling">Selling</option>
+                        <option value="both">Both</option>
+                        <option value="investing">Investing</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="leadBudget">Budget Range</label>
+                    <select id="leadBudget">
+                        <option value="under-200k">Under $200k</option>
+                        <option value="200k-400k">$200k - $400k</option>
+                        <option value="400k-600k">$400k - $600k</option>
+                        <option value="600k-800k">$600k - $800k</option>
+                        <option value="over-800k">Over $800k</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="leadNotes">Notes</label>
+                    <textarea id="leadNotes" rows="3"></textarea>
+                </div>
+                <button type="submit" class="btn">Add Lead</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Lead Details Modal -->
+    <div id="leadDetailsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="leadDetailsTitle">Lead Details</h3>
+                <button class="close-btn" onclick="closeModal('leadDetailsModal')">&times;</button>
+            </div>
+            <div id="leadDetailsContent">
+                <!-- Lead details will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <div id="notification" class="notification"></div>
+
+    <script src="security-enhancements.js"></script>
+    <script>
+        // Initialize security
+        const security = new SecurityEnhancer();
+        
+        // Sample lead data
+        let leads = [
+            {
+                id: 1,
+                name: 'John Smith',
+                email: 'john.smith@email.com',
+                phone: '(555) 123-4567',
+                source: 'website',
+                interest: 'buying',
+                budget: '400k-600k',
+                score: 'hot',
+                lastContact: '2024-01-15',
+                notes: 'Looking for 3BR home in downtown area. Pre-approved for $500k.',
+                status: 'active'
+            },
+            {
+                id: 2,
+                name: 'Sarah Johnson',
+                email: 'sarah.j@email.com',
+                phone: '(555) 234-5678',
+                source: 'social',
+                interest: 'selling',
+                budget: 'over-800k',
+                score: 'warm',
+                lastContact: '2024-01-14',
+                notes: 'Wants to sell current home and upgrade. Timeline: 3-6 months.',
+                status: 'active'
+            },
+            {
+                id: 3,
+                name: 'Mike Davis',
+                email: 'mike.davis@email.com',
+                phone: '(555) 345-6789',
+                source: 'referral',
+                interest: 'investing',
+                budget: '200k-400k',
+                score: 'cold',
+                lastContact: '2024-01-12',
+                notes: 'First-time investor. Interested in rental properties.',
+                status: 'active'
+            },
+            {
+                id: 4,
+                name: 'Emily Wilson',
+                email: 'emily.w@email.com',
+                phone: '(555) 456-7890',
+                source: 'openhouse',
+                interest: 'buying',
+                budget: '600k-800k',
+                score: 'hot',
+                lastContact: '2024-01-16',
+                notes: 'Attended open house on Maple St. Very interested, ready to make offer.',
+                status: 'active'
+            },
+            {
+                id: 5,
+                name: 'Robert Brown',
+                email: 'rob.brown@email.com',
+                phone: '(555) 567-8901',
+                source: 'website',
+                interest: 'both',
+                budget: 'under-200k',
+                score: 'warm',
+                lastContact: '2024-01-13',
+                notes: 'First-time buyer, needs education on process.',
+                status: 'active'
+            }
+        ];
+
+        // Check authentication on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuthentication();
+            initializePage();
+        });
+
+        function checkAuthentication() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn');
+            if (!isLoggedIn || isLoggedIn !== 'true') {
+                showNotification('Please log in to access lead generation', 'error');
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 2000);
+                return;
+            }
+        }
+
+        function initializePage() {
+            updateStats();
+            renderLeads();
+        }
+
+        function updateStats() {
+            const hotLeads = leads.filter(lead => lead.score === 'hot').length;
+            const totalLeads = leads.length;
+            const conversionRate = Math.floor(Math.random() * 10) + 10;
+            const avgResponseTime = (Math.random() * 2 + 1).toFixed(1);
+
+            document.getElementById('totalLeads').textContent = totalLeads;
+            document.getElementById('hotLeads').textContent = hotLeads;
+            document.getElementById('conversionRate').textContent = conversionRate + '%';
+            document.getElementById('avgResponseTime').textContent = avgResponseTime + 'h';
+        }
+
+        function renderLeads(filteredLeads = leads) {
+            const leadsGrid = document.getElementById('leadsGrid');
+            leadsGrid.innerHTML = '';
+
+            filteredLeads.forEach(lead => {
+                const leadCard = document.createElement('div');
+                leadCard.className = `lead-card ${lead.score}`;
+                leadCard.onclick = () => viewLeadDetails(lead);
+
+                leadCard.innerHTML = `
+                    <div class="lead-header">
+                        <div class="lead-name">${security.sanitizeInput(lead.name)}</div>
+                        <div class="lead-score ${lead.score}">${lead.score.toUpperCase()}</div>
+                    </div>
+                    <div class="lead-info">
+                        <div class="lead-detail"><strong>Email:</strong> ${security.sanitizeInput(lead.email)}</div>
+                        <div class="lead-detail"><strong>Phone:</strong> ${security.sanitizeInput(lead.phone)}</div>
+                        <div class="lead-detail"><strong>Source:</strong> ${security.sanitizeInput(lead.source)}</div>
+                        <div class="lead-detail"><strong>Interest:</strong> ${security.sanitizeInput(lead.interest)}</div>
+                        <div class="lead-detail"><strong>Budget:</strong> ${security.sanitizeInput(lead.budget)}</div>
+                        <div class="lead-detail"><strong>Last Contact:</strong> ${security.sanitizeInput(lead.lastContact)}</div>
+                    </div>
+                    <div class="lead-actions">
+                        <button class="action-btn call" onclick="event.stopPropagation(); callLead(${lead.id})">
+                            <i class="fas fa-phone"></i> Call
+                        </button>
+                        <button class="action-btn email" onclick="event.stopPropagation(); emailLead(${lead.id})">
+                            <i class="fas fa-envelope"></i> Email
+                        </button>
+                        <button class="action-btn schedule" onclick="event.stopPropagation(); scheduleMeeting(${lead.id})">
+                            <i class="fas fa-calendar"></i> Schedule
+                        </button>
+                        <button class="action-btn" onclick="event.stopPropagation(); editLead(${lead.id})">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                    </div>
+                `;
+
+                leadsGrid.appendChild(leadCard);
+            });
+        }
+
+        function filterLeads() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const statusFilter = document.getElementById('statusFilter').value;
+            const sourceFilter = document.getElementById('sourceFilter').value;
+
+            let filteredLeads = leads.filter(lead => {
+                const matchesSearch = lead.name.toLowerCase().includes(searchTerm) ||
+                                    lead.email.toLowerCase().includes(searchTerm) ||
+                                    lead.phone.includes(searchTerm);
+                
+                const matchesStatus = statusFilter === 'all' || lead.score === statusFilter;
+                const matchesSource = sourceFilter === 'all' || lead.source === sourceFilter;
+
+                return matchesSearch && matchesStatus && matchesSource;
+            });
+
+            renderLeads(filteredLeads);
+        }
+
+        function addNewLead() {
+            document.getElementById('addLeadModal').style.display = 'block';
+        }
+
+        function viewLeadDetails(lead) {
+            document.getElementById('leadDetailsTitle').textContent = `${lead.name} - Lead Details`;
+            document.getElementById('leadDetailsContent').innerHTML = `
+                <div style="line-height: 1.8;">
+                    <p><strong>Name:</strong> ${security.sanitizeInput(lead.name)}</p>
+                    <p><strong>Email:</strong> ${security.sanitizeInput(lead.email)}</p>
+                    <p><strong>Phone:</strong> ${security.sanitizeInput(lead.phone)}</p>
+                    <p><strong>Source:</strong> ${security.sanitizeInput(lead.source)}</p>
+                    <p><strong>Interest:</strong> ${security.sanitizeInput(lead.interest)}</p>
+                    <p><strong>Budget:</strong> ${security.sanitizeInput(lead.budget)}</p>
+                    <p><strong>Score:</strong> <span class="lead-score ${lead.score}">${lead.score.toUpperCase()}</span></p>
+                    <p><strong>Last Contact:</strong> ${security.sanitizeInput(lead.lastContact)}</p>
+                    <p><strong>Notes:</strong> ${security.sanitizeInput(lead.notes)}</p>
+                    <div style="margin-top: 20px; display: flex; gap: 10px;">
+                        <button class="btn" onclick="callLead(${lead.id})" style="flex: 1;">Call Lead</button>
+                        <button class="btn" onclick="emailLead(${lead.id})" style="flex: 1;">Send Email</button>
+                        <button class="btn" onclick="scheduleMeeting(${lead.id})" style="flex: 1;">Schedule Meeting</button>
+                    </div>
+                </div>
+            `;
+            document.getElementById('leadDetailsModal').style.display = 'block';
+        }
+
+        function callLead(leadId) {
+            const lead = leads.find(l => l.id === leadId);
+            if (lead) {
+                showNotification(`Calling ${lead.name} at ${lead.phone}`, 'info');
+                // Update last contact date
+                lead.lastContact = new Date().toISOString().split('T')[0];
+                renderLeads();
+            }
+        }
+
+        function emailLead(leadId) {
+            const lead = leads.find(l => l.id === leadId);
+            if (lead) {
+                showNotification(`Opening email composer for ${lead.name}`, 'info');
+                // In a real app, this would open the email campaigns page with pre-filled data
+                setTimeout(() => {
+                    window.location.href = `email-campaigns.html?leadId=${leadId}`;
+                }, 1000);
+            }
+        }
+
+        function scheduleMeeting(leadId) {
+            const lead = leads.find(l => l.id === leadId);
+            if (lead) {
+                showNotification(`Opening calendar to schedule meeting with ${lead.name}`, 'info');
+                setTimeout(() => {
+                    window.location.href = `appointments.html?leadId=${leadId}`;
+                }, 1000);
+            }
+        }
+
+        function editLead(leadId) {
+            const lead = leads.find(l => l.id === leadId);
+            if (lead) {
+                // Pre-fill the form with lead data
+                document.getElementById('leadName').value = lead.name;
+                document.getElementById('leadEmail').value = lead.email;
+                document.getElementById('leadPhone').value = lead.phone;
+                document.getElementById('leadSource').value = lead.source;
+                document.getElementById('leadInterest').value = lead.interest;
+                document.getElementById('leadBudget').value = lead.budget;
+                document.getElementById('leadNotes').value = lead.notes;
+                
+                document.getElementById('addLeadModal').style.display = 'block';
+            }
+        }
+
+        function importLeads() {
+            showNotification('Lead import feature opened', 'info');
+        }
+
+        function exportLeads() {
+            showNotification('Exporting leads to CSV...', 'info');
+            // Simulate export
+            setTimeout(() => {
+                showNotification('Leads exported successfully!', 'success');
+            }, 2000);
+        }
+
+        function setupAutomation() {
+            showNotification('Lead automation setup opened', 'info');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('isLoggedIn');
+                localStorage.removeItem('userEmail');
+                showNotification('Logged out successfully', 'success');
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1500);
+            }
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.getElementById('notification');
+            notification.textContent = security.sanitizeInput(message);
+            notification.className = `notification ${type} show`;
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Handle add lead form submission
+        document.getElementById('addLeadForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const newLead = {
+                id: leads.length + 1,
+                name: document.getElementById('leadName').value,
+                email: document.getElementById('leadEmail').value,
+                phone: document.getElementById('leadPhone').value,
+                source: document.getElementById('leadSource').value,
+                interest: document.getElementById('leadInterest').value,
+                budget: document.getElementById('leadBudget').value,
+                notes: document.getElementById('leadNotes').value,
+                score: 'cold', // Default score for new leads
+                lastContact: new Date().toISOString().split('T')[0],
+                status: 'active'
+            };
+            
+            leads.push(newLead);
+            renderLeads();
+            updateStats();
+            closeModal('addLeadModal');
+            showNotification(`Lead ${newLead.name} added successfully!`, 'success');
+            
+            // Reset form
+            document.getElementById('addLeadForm').reset();
+        });
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(modal => {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        }
+
+        // Auto-refresh stats every 30 seconds
+        setInterval(updateStats, 30000);
+    </script>
+</body>
+</html>

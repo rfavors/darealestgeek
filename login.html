@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>da Realest Geek - Member Login</title>
+    <title>Login - da Realest Geek</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/modern-styles.css">
     <script src="security-enhancements.js"></script>
     <style>
         * {
@@ -399,16 +401,20 @@
                         loginTime: new Date().toISOString()
                     }));
                     
+                    // Also set the keys that dashboard.html expects
+                    localStorage.setItem('isLoggedIn', 'true');
+                    localStorage.setItem('userEmail', user.email);
+                    
                     if (successMessage.setSafeHTML) {
-                        successMessage.setSafeHTML(`Welcome back, ${user.name}! Redirecting...`);
+                        successMessage.setSafeHTML(`Welcome back, ${user.name}! Redirecting to dashboard...`);
                     } else {
-                        successMessage.textContent = `Welcome back, ${user.name}! Redirecting...`;
+                        successMessage.textContent = `Welcome back, ${user.name}! Redirecting to dashboard...`;
                     }
                     successMessage.style.display = 'block';
                     
-                    // Redirect to pain points page
+                    // Redirect to dashboard page
                     setTimeout(() => {
-                        window.location.href = 'agent-pain-points.html';
+                        window.location.href = 'dashboard.html';
                     }, 1500);
                 } else {
                     if (errorMessage.setSafeHTML) {

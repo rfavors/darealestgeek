@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Communication - da Realest Geek</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/modern-styles.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #764ba2;
+        }
+
+        .page-title {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .page-title h1 {
+            font-size: 32px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .page-title p {
+            color: #666;
+            font-size: 18px;
+        }
+
+        .communication-layout {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 30px;
+            height: calc(100vh - 300px);
+        }
+
+        .sidebar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+        }
+
+        .sidebar h3 {
+            margin-bottom: 20px;
+            color: #333;
+            font-size: 18px;
+        }
+
+        .client-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .client-item {
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            position: relative;
+        }
+
+        .client-item:hover {
+            background: #f8f9fa;
+            border-color: #e9ecef;
+        }
+
+        .client-item.active {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .client-item.unread::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 8px;
+            height: 8px;
+            background: #4CAF50;
+            border-radius: 50%;
+        }
+
+        .client-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .client-preview {
+            font-size: 12px;
+            opacity: 0.8;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .client-time {
+            font-size: 11px;
+            opacity: 0.6;
+            margin-top: 5px;
+        }
+
+        .main-content {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            padding: 20px 25px;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .client-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .client-avatar {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .client-details h4 {
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .client-status {
+            font-size: 12px;
+            color: #666;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #4CAF50;
+        }
+
+        .chat-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn.secondary {
+            background: #f8f9fa;
+            color: #333;
+            border: 2px solid #e9ecef;
+        }
+
+        .btn.secondary:hover {
+            background: #e9ecef;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .message {
+            max-width: 70%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            position: relative;
+        }
+
+        .message.sent {
+            align-self: flex-end;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .message.received {
+            align-self: flex-start;
+            background: #f8f9fa;
+            color: #333;
+            border: 1px solid #e9ecef;
+        }
+
+        .message-time {
+            font-size: 11px;
+            opacity: 0.6;
+            margin-top: 5px;
+        }
+
+        .message-input {
+            padding: 20px;
+            border-top: 1px solid #e9ecef;
+            display: flex;
+            gap: 15px;
+            align-items: flex-end;
+        }
+
+        .input-container {
+            flex: 1;
+            position: relative;
+        }
+
+        .message-textarea {
+            width: 100%;
+            min-height: 50px;
+            max-height: 120px;
+            padding: 12px 50px 12px 16px;
+            border: 2px solid #e9ecef;
+            border-radius: 25px;
+            resize: none;
+            font-family: inherit;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .message-textarea:focus {
+            border-color: #667eea;
+        }
+
+        .attachment-btn {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .send-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .send-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .send-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .quick-actions {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .quick-actions h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .templates-panel {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            height: 100vh;
+            background: white;
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+            transition: right 0.3s ease;
+            z-index: 1000;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .templates-panel.open {
+            right: 0;
+        }
+
+        .template-item {
+            padding: 15px;
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .template-item:hover {
+            border-color: #667eea;
+            background: #f8f9fa;
+        }
+
+        .template-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .template-preview {
+            font-size: 12px;
+            color: #666;
+            line-height: 1.4;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            z-index: 1000;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success { background: #4CAF50; }
+        .notification.error { background: #f44336; }
+        .notification.info { background: #2196F3; }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .communication-layout {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+            
+            .sidebar {
+                order: 2;
+                max-height: 300px;
+            }
+            
+            .main-content {
+                order: 1;
+                height: 500px;
+            }
+            
+            .templates-panel {
+                width: 100%;
+                right: -100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-comments"></i> Client Communication
+            </div>
+            <nav class="nav-links">
+                <a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                <a href="email-campaigns.html"><i class="fas fa-envelope"></i> Campaigns</a>
+                <a href="lead-generation.html"><i class="fas fa-users"></i> Leads</a>
+                <a href="appointments.html"><i class="fas fa-calendar"></i> Calendar</a>
+                <a href="analytics.html"><i class="fas fa-chart-line"></i> Analytics</a>
+                <a href="property-management.html"><i class="fas fa-home"></i> Properties</a>
+                <button class="btn secondary" onclick="logout()" style="width: auto; margin: 0; padding: 8px 16px;">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </nav>
+        </header>
+
+        <section class="page-title">
+            <h1>Client Communication Hub</h1>
+            <p>Manage all your client conversations and follow-ups in one place</p>
+        </section>
+
+        <div class="quick-actions">
+            <h3>Quick Actions</h3>
+            <div class="action-buttons">
+                <button class="btn" onclick="newMessage()">
+                    <i class="fas fa-plus"></i> New Message
+                </button>
+                <button class="btn" onclick="openTemplates()">
+                    <i class="fas fa-file-alt"></i> Message Templates
+                </button>
+                <button class="btn" onclick="scheduleFollowUp()">
+                    <i class="fas fa-clock"></i> Schedule Follow-up
+                </button>
+                <button class="btn" onclick="bulkMessage()">
+                    <i class="fas fa-broadcast-tower"></i> Bulk Message
+                </button>
+                <button class="btn" onclick="exportConversations()">
+                    <i class="fas fa-download"></i> Export Conversations
+                </button>
+                <button class="btn" onclick="communicationSettings()">
+                    <i class="fas fa-cog"></i> Settings
+                </button>
+            </div>
+        </div>
+
+        <div class="communication-layout">
+            <div class="sidebar">
+                <h3>Recent Conversations</h3>
+                <div class="client-list" id="clientList">
+                    <!-- Client conversations will be loaded here -->
+                </div>
+            </div>
+
+            <div class="main-content">
+                <div class="chat-header">
+                    <div class="client-info">
+                        <div class="client-avatar" id="clientAvatar">JD</div>
+                        <div class="client-details">
+                            <h4 id="clientName">Select a conversation</h4>
+                            <div class="client-status">
+                                <span class="status-indicator"></span>
+                                <span id="clientStatus">Click on a client to start messaging</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chat-actions">
+                        <button class="btn secondary" onclick="callClient()">
+                            <i class="fas fa-phone"></i> Call
+                        </button>
+                        <button class="btn secondary" onclick="emailClient()">
+                            <i class="fas fa-envelope"></i> Email
+                        </button>
+                        <button class="btn secondary" onclick="scheduleAppointment()">
+                            <i class="fas fa-calendar-plus"></i> Schedule
+                        </button>
+                    </div>
+                </div>
+
+                <div class="chat-messages" id="chatMessages">
+                    <div style="text-align: center; color: #666; margin-top: 50px;">
+                        <i class="fas fa-comments" style="font-size: 48px; margin-bottom: 20px; opacity: 0.3;"></i>
+                        <p>Select a client from the sidebar to view conversation history</p>
+                    </div>
+                </div>
+
+                <div class="message-input">
+                    <div class="input-container">
+                        <textarea 
+                            id="messageInput" 
+                            class="message-textarea" 
+                            placeholder="Type your message..."
+                            disabled
+                        ></textarea>
+                        <button class="attachment-btn" onclick="attachFile()" disabled>
+                            <i class="fas fa-paperclip"></i>
+                        </button>
+                    </div>
+                    <button class="send-btn" id="sendBtn" onclick="sendMessage()" disabled>
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Message Templates Panel -->
+    <div class="templates-panel" id="templatesPanel">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h3>Message Templates</h3>
+            <button class="btn secondary" onclick="closeTemplates()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div id="templatesList">
+            <!-- Templates will be loaded here -->
+        </div>
+    </div>
+
+    <div id="notification" class="notification"></div>
+
+    <script src="security-enhancements.js"></script>
+    <script>
+        // Initialize security
+        const security = new SecurityEnhancer();
+        
+        let clients = [];
+        let currentClient = null;
+        let conversations = {};
+
+        // Check authentication on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuthentication();
+            loadClients();
+            loadTemplates();
+            setupMessageInput();
+        });
+
+        function checkAuthentication() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn');
+            if (!isLoggedIn || isLoggedIn !== 'true') {
+                showNotification('Please log in to access client communication', 'error');
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 2000);
+                return;
+            }
+        }
+
+        function loadClients() {
+            // Sample client data
+            clients = [
+                {
+                    id: 1,
+                    name: 'John Davis',
+                    email: 'john.davis@email.com',
+                    phone: '(555) 123-4567',
+                    status: 'Active Buyer',
+                    lastMessage: 'Thanks for showing me the property today!',
+                    lastMessageTime: '2 hours ago',
+                    unread: true
+                },
+                {
+                    id: 2,
+                    name: 'Sarah Wilson',
+                    email: 'sarah.wilson@email.com',
+                    phone: '(555) 234-5678',
+                    status: 'Potential Seller',
+                    lastMessage: 'When can we schedule the listing appointment?',
+                    lastMessageTime: '1 day ago',
+                    unread: false
+                },
+                {
+                    id: 3,
+                    name: 'Mike Johnson',
+                    email: 'mike.johnson@email.com',
+                    phone: '(555) 345-6789',
+                    status: 'Under Contract',
+                    lastMessage: 'The inspection went well, moving forward!',
+                    lastMessageTime: '3 days ago',
+                    unread: true
+                },
+                {
+                    id: 4,
+                    name: 'Emily Brown',
+                    email: 'emily.brown@email.com',
+                    phone: '(555) 456-7890',
+                    status: 'Past Client',
+                    lastMessage: 'Thank you for all your help with the sale!',
+                    lastMessageTime: '1 week ago',
+                    unread: false
+                },
+                {
+                    id: 5,
+                    name: 'Robert Taylor',
+                    email: 'robert.taylor@email.com',
+                    phone: '(555) 567-8901',
+                    status: 'New Lead',
+                    lastMessage: 'I\'m interested in properties in the downtown area',
+                    lastMessageTime: '2 weeks ago',
+                    unread: false
+                }
+            ];
+
+            // Sample conversation data
+            conversations = {
+                1: [
+                    { type: 'received', message: 'Hi! I\'m looking for a 3-bedroom house in Springfield.', time: '10:30 AM' },
+                    { type: 'sent', message: 'Great! I have several options that might interest you. When would be a good time to show you some properties?', time: '10:35 AM' },
+                    { type: 'received', message: 'How about this weekend? Saturday morning works best for me.', time: '10:40 AM' },
+                    { type: 'sent', message: 'Perfect! I\'ll schedule some showings for Saturday at 10 AM. I\'ll send you the addresses shortly.', time: '10:45 AM' },
+                    { type: 'received', message: 'Thanks for showing me the property today!', time: '2 hours ago' }
+                ],
+                2: [
+                    { type: 'received', message: 'I\'m thinking about selling my house. Can you help?', time: 'Yesterday' },
+                    { type: 'sent', message: 'Absolutely! I\'d be happy to help you sell your home. Let\'s start with a market analysis.', time: 'Yesterday' },
+                    { type: 'received', message: 'When can we schedule the listing appointment?', time: '1 day ago' }
+                ],
+                3: [
+                    { type: 'sent', message: 'Congratulations on your offer being accepted!', time: '3 days ago' },
+                    { type: 'received', message: 'Thank you! What\'s the next step?', time: '3 days ago' },
+                    { type: 'sent', message: 'We\'ll schedule the home inspection. I\'ll coordinate with the inspector.', time: '3 days ago' },
+                    { type: 'received', message: 'The inspection went well, moving forward!', time: '3 days ago' }
+                ]
+            };
+
+            displayClients();
+        }
+
+        function displayClients() {
+            const clientList = document.getElementById('clientList');
+            clientList.innerHTML = '';
+
+            clients.forEach(client => {
+                const clientItem = document.createElement('div');
+                clientItem.className = `client-item ${client.unread ? 'unread' : ''}`;
+                clientItem.onclick = () => selectClient(client);
+
+                clientItem.innerHTML = `
+                    <div class="client-name">${security.sanitizeInput(client.name)}</div>
+                    <div class="client-preview">${security.sanitizeInput(client.lastMessage)}</div>
+                    <div class="client-time">${client.lastMessageTime}</div>
+                `;
+
+                clientList.appendChild(clientItem);
+            });
+        }
+
+        function selectClient(client) {
+            currentClient = client;
+            
+            // Update active state
+            document.querySelectorAll('.client-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+            
+            // Update client info in header
+            const initials = client.name.split(' ').map(n => n[0]).join('');
+            document.getElementById('clientAvatar').textContent = initials;
+            document.getElementById('clientName').textContent = client.name;
+            document.getElementById('clientStatus').textContent = client.status;
+            
+            // Load conversation
+            loadConversation(client.id);
+            
+            // Enable message input
+            document.getElementById('messageInput').disabled = false;
+            document.getElementById('sendBtn').disabled = false;
+            document.querySelector('.attachment-btn').disabled = false;
+            
+            // Mark as read
+            client.unread = false;
+            displayClients();
+        }
+
+        function loadConversation(clientId) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messages = conversations[clientId] || [];
+            
+            chatMessages.innerHTML = '';
+            
+            if (messages.length === 0) {
+                chatMessages.innerHTML = `
+                    <div style="text-align: center; color: #666; margin-top: 50px;">
+                        <i class="fas fa-comment-slash" style="font-size: 48px; margin-bottom: 20px; opacity: 0.3;"></i>
+                        <p>No messages yet. Start the conversation!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            messages.forEach(msg => {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${msg.type}`;
+                messageDiv.innerHTML = `
+                    <div>${security.sanitizeInput(msg.message)}</div>
+                    <div class="message-time">${msg.time}</div>
+                `;
+                chatMessages.appendChild(messageDiv);
+            });
+            
+            // Scroll to bottom
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function setupMessageInput() {
+            const messageInput = document.getElementById('messageInput');
+            
+            messageInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                }
+            });
+            
+            messageInput.addEventListener('input', function() {
+                // Auto-resize textarea
+                this.style.height = 'auto';
+                this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+            });
+        }
+
+        function sendMessage() {
+            const messageInput = document.getElementById('messageInput');
+            const message = messageInput.value.trim();
+            
+            if (!message || !currentClient) return;
+            
+            // Add message to conversation
+            if (!conversations[currentClient.id]) {
+                conversations[currentClient.id] = [];
+            }
+            
+            const newMessage = {
+                type: 'sent',
+                message: message,
+                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            };
+            
+            conversations[currentClient.id].push(newMessage);
+            
+            // Update client's last message
+            currentClient.lastMessage = message;
+            currentClient.lastMessageTime = 'Just now';
+            
+            // Refresh display
+            loadConversation(currentClient.id);
+            displayClients();
+            
+            // Clear input
+            messageInput.value = '';
+            messageInput.style.height = 'auto';
+            
+            showNotification('Message sent successfully', 'success');
+            
+            // Simulate client response (for demo)
+            setTimeout(() => {
+                simulateClientResponse();
+            }, 2000 + Math.random() * 3000);
+        }
+
+        function simulateClientResponse() {
+            if (!currentClient) return;
+            
+            const responses = [
+                'Thank you for the information!',
+                'That sounds great, let\'s proceed.',
+                'I\'ll need to think about it.',
+                'Can we schedule a time to discuss this?',
+                'Perfect! I\'m excited to move forward.',
+                'I have a few more questions.',
+                'Thanks for your quick response!'
+            ];
+            
+            const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+            
+            const responseMessage = {
+                type: 'received',
+                message: randomResponse,
+                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            };
+            
+            conversations[currentClient.id].push(responseMessage);
+            
+            // Update client's last message
+            currentClient.lastMessage = randomResponse;
+            currentClient.lastMessageTime = 'Just now';
+            currentClient.unread = true;
+            
+            // Refresh display
+            loadConversation(currentClient.id);
+            displayClients();
+            
+            showNotification('New message received', 'info');
+        }
+
+        function loadTemplates() {
+            const templates = [
+                {
+                    title: 'Welcome New Client',
+                    content: 'Welcome! I\'m excited to help you with your real estate needs. Let\'s schedule a time to discuss your goals and preferences.'
+                },
+                {
+                    title: 'Property Showing Follow-up',
+                    content: 'Thank you for viewing the property today! I\'d love to hear your thoughts and answer any questions you might have.'
+                },
+                {
+                    title: 'Market Update',
+                    content: 'Here\'s the latest market update for your area. Property values have been trending upward, making it a great time to consider your options.'
+                },
+                {
+                    title: 'Offer Submitted',
+                    content: 'Great news! I\'ve submitted your offer. The seller typically responds within 24-48 hours. I\'ll keep you updated on any developments.'
+                },
+                {
+                    title: 'Closing Reminder',
+                    content: 'Your closing is scheduled for [DATE] at [TIME]. Please bring a valid ID and certified funds. I\'ll see you there!'
+                },
+                {
+                    title: 'Thank You - Referral Request',
+                    content: 'Thank you for choosing me as your real estate agent! If you know anyone looking to buy or sell, I\'d appreciate the referral.'
+                }
+            ];
+            
+            const templatesList = document.getElementById('templatesList');
+            templatesList.innerHTML = '';
+            
+            templates.forEach(template => {
+                const templateItem = document.createElement('div');
+                templateItem.className = 'template-item';
+                templateItem.onclick = () => useTemplate(template.content);
+                
+                templateItem.innerHTML = `
+                    <div class="template-title">${template.title}</div>
+                    <div class="template-preview">${template.content}</div>
+                `;
+                
+                templatesList.appendChild(templateItem);
+            });
+        }
+
+        function useTemplate(content) {
+            document.getElementById('messageInput').value = content;
+            closeTemplates();
+            showNotification('Template applied', 'success');
+        }
+
+        function openTemplates() {
+            document.getElementById('templatesPanel').classList.add('open');
+        }
+
+        function closeTemplates() {
+            document.getElementById('templatesPanel').classList.remove('open');
+        }
+
+        function newMessage() {
+            showNotification('Opening new message composer...', 'info');
+            // In a real app, this would open a modal to select a client and compose a message
+        }
+
+        function scheduleFollowUp() {
+            if (!currentClient) {
+                showNotification('Please select a client first', 'error');
+                return;
+            }
+            showNotification(`Scheduling follow-up with ${currentClient.name}...`, 'info');
+            // In a real app, this would open a scheduling interface
+        }
+
+        function bulkMessage() {
+            showNotification('Opening bulk message composer...', 'info');
+            // In a real app, this would open a bulk messaging interface
+        }
+
+        function exportConversations() {
+            showNotification('Exporting conversation history...', 'info');
+            
+            // Create export data
+            const exportData = [];
+            
+            clients.forEach(client => {
+                const clientConversations = conversations[client.id] || [];
+                exportData.push(`\n=== ${client.name} (${client.email}) ===`);
+                exportData.push(`Status: ${client.status}`);
+                exportData.push(`Phone: ${client.phone}`);
+                exportData.push('\nConversation History:');
+                
+                clientConversations.forEach(msg => {
+                    const sender = msg.type === 'sent' ? 'Agent' : client.name;
+                    exportData.push(`[${msg.time}] ${sender}: ${msg.message}`);
+                });
+                
+                exportData.push('\n' + '='.repeat(50));
+            });
+            
+            const blob = new Blob([exportData.join('\n')], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'client-conversations.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+            
+            showNotification('Conversations exported successfully', 'success');
+        }
+
+        function communicationSettings() {
+            showNotification('Opening communication settings...', 'info');
+            // In a real app, this would open settings for notifications, templates, etc.
+        }
+
+        function callClient() {
+            if (!currentClient) {
+                showNotification('Please select a client first', 'error');
+                return;
+            }
+            showNotification(`Calling ${currentClient.name} at ${currentClient.phone}...`, 'info');
+        }
+
+        function emailClient() {
+            if (!currentClient) {
+                showNotification('Please select a client first', 'error');
+                return;
+            }
+            showNotification(`Opening email to ${currentClient.email}...`, 'info');
+        }
+
+        function scheduleAppointment() {
+            if (!currentClient) {
+                showNotification('Please select a client first', 'error');
+                return;
+            }
+            showNotification(`Scheduling appointment with ${currentClient.name}...`, 'info');
+        }
+
+        function attachFile() {
+            showNotification('File attachment feature coming soon!', 'info');
+            // In a real app, this would open a file picker
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('isLoggedIn');
+                localStorage.removeItem('userEmail');
+                showNotification('Logged out successfully', 'success');
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1500);
+            }
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.getElementById('notification');
+            notification.textContent = security.sanitizeInput(message);
+            notification.className = `notification ${type} show`;
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Close templates panel when clicking outside
+        document.addEventListener('click', function(event) {
+            const templatesPanel = document.getElementById('templatesPanel');
+            if (!templatesPanel.contains(event.target) && !event.target.closest('[onclick*="openTemplates"]')) {
+                closeTemplates();
+            }
+        });
+    </script>
+</body>
+</html>

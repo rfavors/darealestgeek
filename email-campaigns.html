@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Campaigns - da Realest Geek</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/modern-styles.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #764ba2;
+        }
+
+        .page-title {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .page-title h1 {
+            font-size: 32px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .page-title p {
+            color: #666;
+            font-size: 18px;
+        }
+
+        .campaign-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .card h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn.secondary {
+            background: #f8f9fa;
+            color: #333;
+            border: 2px solid #e9ecef;
+        }
+
+        .btn.secondary:hover {
+            background: #e9ecef;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .campaign-list {
+            list-style: none;
+        }
+
+        .campaign-item {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-left: 4px solid #667eea;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .campaign-item:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .campaign-item.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .campaign-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .campaign-stats {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .campaign-item.active .campaign-stats {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .campaign-editor {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .template-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .template-card {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .template-card:hover {
+            border-color: #667eea;
+            background: #e7f3ff;
+        }
+
+        .template-card.selected {
+            border-color: #667eea;
+            background: #667eea;
+            color: white;
+        }
+
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .metric-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .metric-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .metric-label {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .progress-bar {
+            background: #e9ecef;
+            border-radius: 10px;
+            height: 8px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            z-index: 1000;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success { background: #4CAF50; }
+        .notification.error { background: #f44336; }
+        .notification.info { background: #2196F3; }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 600px;
+            margin: 50px auto;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .campaign-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 10px;
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-envelope"></i> Email Campaigns
+            </div>
+            <nav class="nav-links">
+                <a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a>
+                <a href="lead-generation.html"><i class="fas fa-users"></i> Leads</a>
+                <a href="appointments.html"><i class="fas fa-calendar"></i> Calendar</a>
+                <a href="analytics.html"><i class="fas fa-chart-line"></i> Analytics</a>
+                <button class="btn secondary" onclick="logout()" style="width: auto; margin: 0; padding: 8px 16px;">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </nav>
+        </header>
+
+        <section class="page-title">
+            <h1>Email Campaign Manager</h1>
+            <p>Create, manage, and track your email marketing campaigns</p>
+        </section>
+
+        <div class="campaign-grid">
+            <div class="sidebar">
+                <div class="card">
+                    <h3>Quick Actions</h3>
+                    <button class="btn" onclick="createNewCampaign()">
+                        <i class="fas fa-plus"></i> New Campaign
+                    </button>
+                    <button class="btn secondary" onclick="openTemplateLibrary()">
+                        <i class="fas fa-file-alt"></i> Template Library
+                    </button>
+                    <button class="btn secondary" onclick="importContacts()">
+                        <i class="fas fa-upload"></i> Import Contacts
+                    </button>
+                    <button class="btn secondary" onclick="viewAnalytics()">
+                        <i class="fas fa-chart-bar"></i> View Analytics
+                    </button>
+                </div>
+
+                <div class="card">
+                    <h3>Active Campaigns</h3>
+                    <ul class="campaign-list" id="campaignList">
+                        <li class="campaign-item active" onclick="selectCampaign(this, 'new-listing-alert')">
+                            <div class="campaign-name">New Listing Alert</div>
+                            <div class="campaign-stats">Sent: 1,247 | Opens: 68% | Clicks: 12%</div>
+                        </li>
+                        <li class="campaign-item" onclick="selectCampaign(this, 'market-update')">
+                            <div class="campaign-name">Monthly Market Update</div>
+                            <div class="campaign-stats">Sent: 2,156 | Opens: 45% | Clicks: 8%</div>
+                        </li>
+                        <li class="campaign-item" onclick="selectCampaign(this, 'follow-up-sequence')">
+                            <div class="campaign-name">Lead Follow-up Sequence</div>
+                            <div class="campaign-stats">Active: 156 leads | Conversion: 15%</div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h3>Campaign Performance</h3>
+                    <div class="analytics-grid">
+                        <div class="metric-card">
+                            <div class="metric-number" id="totalSent">4,559</div>
+                            <div class="metric-label">Total Sent</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-number" id="openRate">52%</div>
+                            <div class="metric-label">Open Rate</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 52%"></div>
+                            </div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-number" id="clickRate">9%</div>
+                            <div class="metric-label">Click Rate</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 9%"></div>
+                            </div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-number" id="conversionRate">3.2%</div>
+                            <div class="metric-label">Conversion</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 32%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="main-content">
+                <div class="campaign-editor">
+                    <h3>Campaign Editor</h3>
+                    <form id="campaignForm">
+                        <div class="form-group">
+                            <label for="campaignName">Campaign Name</label>
+                            <input type="text" id="campaignName" placeholder="Enter campaign name" value="New Listing Alert">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="emailSubject">Email Subject</label>
+                            <input type="text" id="emailSubject" placeholder="Enter email subject" value="🏠 New Listing Alert: Beautiful 3BR Home in Downtown">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="senderName">Sender Name</label>
+                            <input type="text" id="senderName" placeholder="Your name" value="Agent Demo">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="senderEmail">Sender Email</label>
+                            <input type="email" id="senderEmail" placeholder="your@email.com" value="agent@realestategeek.com">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="campaignType">Campaign Type</label>
+                            <select id="campaignType" onchange="updateTemplate()">
+                                <option value="listing-alert">New Listing Alert</option>
+                                <option value="market-update">Market Update</option>
+                                <option value="follow-up">Lead Follow-up</option>
+                                <option value="newsletter">Newsletter</option>
+                                <option value="open-house">Open House Invitation</option>
+                                <option value="price-drop">Price Drop Alert</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="emailContent">Email Content</label>
+                            <textarea id="emailContent" placeholder="Enter your email content...">Hi {{firstName}},
+
+I'm excited to share a new listing that just hit the market!
+
+🏠 **Beautiful 3BR Home in Downtown**
+📍 123 Main Street, Downtown
+💰 $450,000
+🛏️ 3 Bedrooms, 2 Bathrooms
+📐 1,850 sq ft
+
+✨ **Key Features:**
+• Recently renovated kitchen with granite countertops
+• Hardwood floors throughout
+• Private backyard with deck
+• Walking distance to shops and restaurants
+• Excellent school district
+
+This property won't last long in today's market. Would you like to schedule a private showing?
+
+Best regards,
+{{agentName}}
+{{agentPhone}}
+{{agentEmail}}</textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Email Templates</label>
+                            <div class="template-grid">
+                                <div class="template-card selected" onclick="selectTemplate(this, 'listing-alert')">
+                                    <i class="fas fa-home"></i>
+                                    <div>Listing Alert</div>
+                                </div>
+                                <div class="template-card" onclick="selectTemplate(this, 'market-update')">
+                                    <i class="fas fa-chart-line"></i>
+                                    <div>Market Update</div>
+                                </div>
+                                <div class="template-card" onclick="selectTemplate(this, 'follow-up')">
+                                    <i class="fas fa-handshake"></i>
+                                    <div>Follow-up</div>
+                                </div>
+                                <div class="template-card" onclick="selectTemplate(this, 'newsletter')">
+                                    <i class="fas fa-newspaper"></i>
+                                    <div>Newsletter</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; gap: 15px; margin-top: 20px;">
+                            <button type="button" class="btn" onclick="previewEmail()" style="flex: 1;">
+                                <i class="fas fa-eye"></i> Preview
+                            </button>
+                            <button type="button" class="btn" onclick="sendTestEmail()" style="flex: 1;">
+                                <i class="fas fa-paper-plane"></i> Send Test
+                            </button>
+                            <button type="button" class="btn" onclick="saveCampaign()" style="flex: 1;">
+                                <i class="fas fa-save"></i> Save Campaign
+                            </button>
+                            <button type="button" class="btn" onclick="launchCampaign()" style="flex: 1;">
+                                <i class="fas fa-rocket"></i> Launch
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Email Preview Modal -->
+    <div id="previewModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Email Preview</h3>
+                <button class="close-btn" onclick="closeModal('previewModal')">&times;</button>
+            </div>
+            <div id="previewContent">
+                <!-- Preview content will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <div id="notification" class="notification"></div>
+
+    <script src="security-enhancements.js"></script>
+    <script>
+        // Initialize security
+        const security = new SecurityEnhancer();
+        let currentCampaign = 'new-listing-alert';
+        
+        // Email templates
+        const emailTemplates = {
+            'listing-alert': {
+                subject: '🏠 New Listing Alert: {{propertyAddress}}',
+                content: `Hi {{firstName}},\n\nI'm excited to share a new listing that just hit the market!\n\n🏠 **{{propertyTitle}}**\n📍 {{propertyAddress}}\n💰 {{propertyPrice}}\n🛏️ {{bedrooms}} Bedrooms, {{bathrooms}} Bathrooms\n📐 {{squareFootage}} sq ft\n\n✨ **Key Features:**\n{{propertyFeatures}}\n\nThis property won't last long in today's market. Would you like to schedule a private showing?\n\nBest regards,\n{{agentName}}\n{{agentPhone}}\n{{agentEmail}}`
+            },
+            'market-update': {
+                subject: '📊 Monthly Market Update - {{monthYear}}',
+                content: `Hi {{firstName}},\n\nHere's your monthly market update for {{area}}:\n\n📈 **Market Trends:**\n• Average home price: {{averagePrice}}\n• Days on market: {{daysOnMarket}}\n• Inventory levels: {{inventoryLevel}}\n• Interest rates: {{interestRate}}\n\n🏠 **Recent Sales in Your Area:**\n{{recentSales}}\n\n💡 **Market Insights:**\n{{marketInsights}}\n\nLet me know if you'd like to discuss how these trends might affect your buying or selling plans.\n\nBest regards,\n{{agentName}}`
+            },
+            'follow-up': {
+                subject: 'Following up on your real estate inquiry',
+                content: `Hi {{firstName}},\n\nI wanted to follow up on your recent inquiry about {{inquirySubject}}.\n\n🤝 **Next Steps:**\n• Schedule a consultation to discuss your needs\n• Review current market conditions\n• Explore financing options\n• Start your property search\n\nI'm here to help make your real estate journey as smooth as possible. When would be a good time for a quick call?\n\nBest regards,\n{{agentName}}\n{{agentPhone}}\n{{agentEmail}}`
+            },
+            'newsletter': {
+                subject: '🏡 Your Real Estate Newsletter - {{monthYear}}',
+                content: `Hi {{firstName}},\n\nWelcome to this month's real estate newsletter!\n\n📰 **This Month's Highlights:**\n{{newsletterHighlights}}\n\n🏠 **Featured Properties:**\n{{featuredProperties}}\n\n💡 **Real Estate Tips:**\n{{realEstateTips}}\n\n📅 **Upcoming Events:**\n{{upcomingEvents}}\n\nThank you for being a valued client!\n\nBest regards,\n{{agentName}}`
+            }
+        };
+
+        // Check authentication on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuthentication();
+            initializePage();
+        });
+
+        function checkAuthentication() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn');
+            if (!isLoggedIn || isLoggedIn !== 'true') {
+                showNotification('Please log in to access email campaigns', 'error');
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 2000);
+                return;
+            }
+        }
+
+        function initializePage() {
+            updateMetrics();
+            loadCampaignData();
+        }
+
+        function updateMetrics() {
+            // Simulate real-time metrics
+            const metrics = {
+                totalSent: Math.floor(Math.random() * 1000) + 4000,
+                openRate: Math.floor(Math.random() * 20) + 40,
+                clickRate: Math.floor(Math.random() * 10) + 5,
+                conversionRate: (Math.random() * 2 + 2).toFixed(1)
+            };
+
+            document.getElementById('totalSent').textContent = metrics.totalSent.toLocaleString();
+            document.getElementById('openRate').textContent = metrics.openRate + '%';
+            document.getElementById('clickRate').textContent = metrics.clickRate + '%';
+            document.getElementById('conversionRate').textContent = metrics.conversionRate + '%';
+        }
+
+        function selectCampaign(element, campaignId) {
+            // Remove active class from all campaigns
+            document.querySelectorAll('.campaign-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Add active class to selected campaign
+            element.classList.add('active');
+            currentCampaign = campaignId;
+            
+            loadCampaignData();
+        }
+
+        function loadCampaignData() {
+            // Load campaign data based on currentCampaign
+            const campaignData = {
+                'new-listing-alert': {
+                    name: 'New Listing Alert',
+                    subject: '🏠 New Listing Alert: Beautiful 3BR Home in Downtown',
+                    type: 'listing-alert'
+                },
+                'market-update': {
+                    name: 'Monthly Market Update',
+                    subject: '📊 Monthly Market Update - December 2024',
+                    type: 'market-update'
+                },
+                'follow-up-sequence': {
+                    name: 'Lead Follow-up Sequence',
+                    subject: 'Following up on your real estate inquiry',
+                    type: 'follow-up'
+                }
+            };
+
+            const data = campaignData[currentCampaign];
+            if (data) {
+                document.getElementById('campaignName').value = data.name;
+                document.getElementById('emailSubject').value = data.subject;
+                document.getElementById('campaignType').value = data.type;
+                updateTemplate();
+            }
+        }
+
+        function updateTemplate() {
+            const templateType = document.getElementById('campaignType').value;
+            const template = emailTemplates[templateType];
+            
+            if (template) {
+                document.getElementById('emailSubject').value = template.subject;
+                document.getElementById('emailContent').value = template.content;
+            }
+        }
+
+        function selectTemplate(element, templateType) {
+            // Remove selected class from all templates
+            document.querySelectorAll('.template-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Add selected class to clicked template
+            element.classList.add('selected');
+            
+            // Update campaign type and template
+            document.getElementById('campaignType').value = templateType;
+            updateTemplate();
+        }
+
+        function createNewCampaign() {
+            // Clear form for new campaign
+            document.getElementById('campaignName').value = '';
+            document.getElementById('emailSubject').value = '';
+            document.getElementById('emailContent').value = '';
+            document.getElementById('campaignType').value = 'listing-alert';
+            
+            showNotification('New campaign created', 'success');
+        }
+
+        function previewEmail() {
+            const subject = document.getElementById('emailSubject').value;
+            const content = document.getElementById('emailContent').value;
+            const senderName = document.getElementById('senderName').value;
+            const senderEmail = document.getElementById('senderEmail').value;
+            
+            // Replace placeholders with sample data
+            let previewContent = content
+                .replace(/{{firstName}}/g, 'John')
+                .replace(/{{agentName}}/g, senderName)
+                .replace(/{{agentEmail}}/g, senderEmail)
+                .replace(/{{agentPhone}}/g, '(555) 123-4567')
+                .replace(/{{propertyAddress}}/g, '123 Main Street, Downtown')
+                .replace(/{{propertyPrice}}/g, '$450,000')
+                .replace(/{{propertyTitle}}/g, 'Beautiful 3BR Home in Downtown')
+                .replace(/{{bedrooms}}/g, '3')
+                .replace(/{{bathrooms}}/g, '2')
+                .replace(/{{squareFootage}}/g, '1,850')
+                .replace(/{{monthYear}}/g, 'December 2024')
+                .replace(/\n/g, '<br>');
+            
+            document.getElementById('previewContent').innerHTML = `
+                <div style="border: 1px solid #ddd; padding: 20px; border-radius: 8px; background: #f9f9f9;">
+                    <div style="margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #ddd;">
+                        <strong>From:</strong> ${security.sanitizeInput(senderName)} &lt;${security.sanitizeInput(senderEmail)}&gt;<br>
+                        <strong>Subject:</strong> ${security.sanitizeInput(subject)}
+                    </div>
+                    <div style="line-height: 1.6;">
+                        ${previewContent}
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('previewModal').style.display = 'block';
+        }
+
+        function sendTestEmail() {
+            const testEmail = prompt('Enter email address for test:');
+            if (testEmail && testEmail.includes('@')) {
+                showNotification(`Test email sent to ${testEmail}`, 'success');
+            } else if (testEmail) {
+                showNotification('Please enter a valid email address', 'error');
+            }
+        }
+
+        function saveCampaign() {
+            const campaignName = document.getElementById('campaignName').value;
+            if (!campaignName.trim()) {
+                showNotification('Please enter a campaign name', 'error');
+                return;
+            }
+            
+            showNotification(`Campaign "${campaignName}" saved successfully`, 'success');
+        }
+
+        function launchCampaign() {
+            const campaignName = document.getElementById('campaignName').value;
+            if (!campaignName.trim()) {
+                showNotification('Please enter a campaign name', 'error');
+                return;
+            }
+            
+            if (confirm(`Are you sure you want to launch the campaign "${campaignName}"?`)) {
+                showNotification(`Campaign "${campaignName}" launched successfully!`, 'success');
+                // Simulate campaign launch
+                setTimeout(() => {
+                    updateMetrics();
+                }, 2000);
+            }
+        }
+
+        function openTemplateLibrary() {
+            showNotification('Template library opened', 'info');
+        }
+
+        function importContacts() {
+            showNotification('Contact import feature opened', 'info');
+        }
+
+        function viewAnalytics() {
+            window.location.href = 'analytics.html';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('isLoggedIn');
+                localStorage.removeItem('userEmail');
+                showNotification('Logged out successfully', 'success');
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1500);
+            }
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.getElementById('notification');
+            notification.textContent = security.sanitizeInput(message);
+            notification.className = `notification ${type} show`;
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('previewModal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        // Auto-save functionality
+        setInterval(() => {
+            const campaignName = document.getElementById('campaignName').value;
+            if (campaignName.trim()) {
+                // Auto-save logic here
+                console.log('Auto-saving campaign...');
+            }
+        }, 30000); // Auto-save every 30 seconds
+    </script>
+</body>
+</html>

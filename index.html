@@ -8,81 +8,17 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/modern-styles.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        html {
-            scroll-behavior: smooth;
-        }
-        
-        body {
-            font-family: 'Inter', sans-serif;
-            line-height: 1.6;
-            color: #1a1a1a;
-            overflow-x: hidden;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-        
-        /* Header */
-        .header {
-            background: linear-gradient(135deg, #8B4513 0%, #D2691E 100%);
-            color: white;
-            padding: 80px 0 120px;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="%23ffffff" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>') repeat;
-            opacity: 0.3;
-        }
-        
-        .nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 60px;
-            position: relative;
-            z-index: 2;
-        }
-        
-        .logo {
-            font-size: 1.8rem;
-            font-weight: 800;
+        /* Additional page-specific styles */
+        .video-placeholder {
+            background-color: rgba(0,0,0,0.2);
             display: flex;
             align-items: center;
-            gap: 10px;
-        }
-        
-        .nav-links {
-            display: flex;
-            gap: 30px;
-            list-style: none;
-        }
-        
-        .nav-links a {
+            justify-content: center;
             color: white;
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            position: relative;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
+            font-size: 1.2rem;
         }
         
         .nav-links a::after {
@@ -110,17 +46,30 @@
             text-align: center;
             position: relative;
             z-index: 2;
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
-        .hero::after {
-            content: '';
+        .hero-video-container {
             position: absolute;
             top: 0;
             left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="%23ffffff" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
-            animation: float 20s ease-in-out infinite;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+        }
+        
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(139, 69, 19, 0.8) 0%, rgba(210, 105, 30, 0.7) 100%);
+            z-index: 1;
         }
         
         @keyframes float {
@@ -986,11 +935,20 @@
             </nav>
             
             <div class="hero">
-                <h1 class="fade-in-up">Transform Your Real Estate Business with AI</h1>
-                <p class="subtitle fade-in-up">The only platform that solves every pain point for real estate agents and brokers. Generate more leads, close more deals, and scale your business effortlessly.</p>
-                <div class="cta-buttons fade-in-up">
-                    <a href="#" class="btn btn-primary" onclick="startTrial()">Start Free Trial</a>
-                    <a href="#features" class="btn btn-secondary">See How It Works</a>
+                <div class="hero-video-container">
+                    <div class="video-placeholder" style="width:100%; height:100%; position:absolute; top:0; left:0;">
+                        <i class="fas fa-home fa-3x" style="margin-bottom:10px;"></i>
+                        <div>Real Estate Success</div>
+                    </div>
+                    <div class="hero-overlay"></div>
+                </div>
+                <div class="hero-content">
+                    <h1 class="hero-title fade-in-up">Transform Your Real Estate Business with AI</h1>
+                    <p class="subtitle fade-in-up">The only platform that solves every pain point for real estate agents and brokers. Generate more leads, close more deals, and scale your business effortlessly.</p>
+                    <div class="cta-buttons fade-in-up">
+                        <a href="#" class="btn btn-primary" onclick="startTrial()">Start Free Trial</a>
+                        <a href="#features" class="btn btn-secondary">See How It Works</a>
+                    </div>
                 </div>
             </div>
         </div>

@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agent Dashboard - da Realest Geek</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/modern-styles.css">
+    <style>
+        /* Dashboard-specific overrides */
+        .dashboard-wrapper {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            min-height: 100vh;
+        }
+        
+        .dashboard-main {
+            padding: var(--space-lg);
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .logout-btn {
+            background: #ff4757;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: #ff3742;
+            transform: translateY(-2px);
+        }
+
+        .welcome-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .welcome-title {
+            font-size: 32px;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .welcome-subtitle {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            border-color: #667eea;
+            transform: translateY(-5px);
+        }
+
+        .stat-number {
+            font-size: 28px;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        .tool-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-10px);
+            border-color: #667eea;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .tool-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .tool-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .tool-description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .tool-features {
+            list-style: none;
+            margin-bottom: 20px;
+        }
+
+        .tool-features li {
+            padding: 5px 0;
+            color: #555;
+            font-size: 14px;
+        }
+
+        .tool-features li:before {
+            content: "✓";
+            color: #4CAF50;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        .tool-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .tool-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .email-campaigns { background: linear-gradient(45deg, #FF6B6B, #FF8E53); }
+        .lead-generation { background: linear-gradient(45deg, #4ECDC4, #44A08D); }
+        .appointments { background: linear-gradient(45deg, #A8E6CF, #7FCDCD); }
+        .property-mgmt { background: linear-gradient(45deg, #FFD93D, #FF6B6B); }
+        .analytics { background: linear-gradient(45deg, #6C5CE7, #A29BFE); }
+        .communication { background: linear-gradient(45deg, #FD79A8, #FDCB6E); }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            z-index: 1000;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success { background: #4CAF50; }
+        .notification.error { background: #f44336; }
+        .notification.info { background: #2196F3; }
+
+        @media (max-width: 768px) {
+            .dashboard-container {
+                padding: 10px;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .tools-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-wrapper">
+        <div class="sidebar">
+            <div class="logo">
+                <h2>da Realest Geek</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="dashboard.html" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                    <li><a href="lead-generation.html"><i class="fas fa-user-plus"></i> Lead Generation</a></li>
+                    <li><a href="email-campaigns.html"><i class="fas fa-envelope"></i> Email Campaigns</a></li>
+                    <li><a href="appointments.html"><i class="fas fa-calendar-alt"></i> Appointments</a></li>
+                    <li><a href="property-management.html"><i class="fas fa-home"></i> Property Management</a></li>
+                    <li><a href="analytics.html"><i class="fas fa-chart-bar"></i> Analytics</a></li>
+                    <li><a href="client-communication.html"><i class="fas fa-comments"></i> Client Communication</a></li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="#" id="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </div>
+        </div>
+        <div class="dashboard-main">
+            <header class="header">
+                <div class="logo">
+                    <i class="fas fa-home"></i> RealEstateGeek
+                </div>
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">A</div>
+                    <span id="userName">Agent Demo</span>
+                    <button class="logout-btn" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </header>
+
+        <section class="welcome-section animate-fade-in">
+            <h1 class="welcome-title">Welcome, <span id="welcomeName">Agent</span>!</h1>
+            <p class="welcome-subtitle">Here's your real estate business at a glance.</p>
+            
+            <div class="stats-grid animate-slide-up">
+                <div class="stat-card hover-lift">
+                    <div class="stat-icon"><i class="fas fa-user-plus"></i></div>
+                    <div class="stat-info">
+                        <h3>New Leads</h3>
+                        <p class="stat-value">24</p>
+                        <p class="stat-change positive">+12% from last week</p>
+                    </div>
+                </div>
+                <div class="stat-card hover-lift">
+                    <div class="stat-icon"><i class="fas fa-handshake"></i></div>
+                    <div class="stat-info">
+                        <h3>Deals Closed</h3>
+                        <p class="stat-value">7</p>
+                        <p class="stat-change positive">+5% from last month</p>
+                    </div>
+                </div>
+                <div class="stat-card hover-lift">
+                    <div class="stat-icon"><i class="fas fa-calendar-check"></i></div>
+                    <div class="stat-info">
+                        <h3>Appointments</h3>
+                        <p class="stat-value">12</p>
+                        <p class="stat-change neutral">Same as last week</p>
+                    </div>
+                </div>
+                <div class="stat-card hover-lift">
+                    <div class="stat-icon"><i class="fas fa-dollar-sign"></i></div>
+                    <div class="stat-info">
+                        <h3>Revenue</h3>
+                        <p class="stat-value">$42,500</p>
+                        <p class="stat-change positive">+18% from last month</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="tools-grid animate-slide-up">
+            <div class="tool-card hover-lift" onclick="openTool('email-campaigns')">
+                <div class="tool-icon email-campaigns">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <h3 class="tool-title">Email Campaigns</h3>
+                <p class="tool-description">Create and manage automated email marketing campaigns with AI-powered content generation.</p>
+                <ul class="tool-features">
+                    <li>Pre-built templates for listings, follow-ups</li>
+                    <li>Automated drip campaigns</li>
+                    <li>Performance analytics</li>
+                    <li>A/B testing capabilities</li>
+                </ul>
+                <button class="tool-btn">Launch Email Campaigns</button>
+            </div>
+
+            <div class="tool-card hover-lift" onclick="openTool('lead-generation')">
+                <div class="tool-icon lead-generation">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h3 class="tool-title">Lead Generation</h3>
+                <p class="tool-description">Advanced lead capture and nurturing system with CRM integration and AI scoring.</p>
+                <ul class="tool-features">
+                    <li>Lead scoring and qualification</li>
+                    <li>Social media integration</li>
+                    <li>Automated follow-up sequences</li>
+                    <li>ROI tracking and analytics</li>
+                </ul>
+                <button class="tool-btn">Manage Leads</button>
+            </div>
+
+            <div class="tool-card hover-lift" onclick="openTool('appointments')">
+                <div class="tool-icon appointments">
+                    <i class="fas fa-calendar-alt"></i>
+                </div>
+                <h3 class="tool-title">Appointment Scheduling</h3>
+                <p class="tool-description">Smart calendar management with automated booking and reminder systems.</p>
+                <ul class="tool-features">
+                    <li>Online booking integration</li>
+                    <li>Automated reminders (SMS/Email)</li>
+                    <li>Calendar sync (Google, Outlook)</li>
+                    <li>No-show tracking and management</li>
+                </ul>
+                <button class="tool-btn">View Calendar</button>
+            </div>
+
+            <div class="tool-card hover-lift" onclick="openTool('property-management')">
+                <div class="tool-icon property-mgmt">
+                    <i class="fas fa-building"></i>
+                </div>
+                <h3 class="tool-title">Property Management</h3>
+                <p class="tool-description">Comprehensive property listing management with MLS integration and market analysis.</p>
+                <ul class="tool-features">
+                    <li>MLS synchronization</li>
+                    <li>Automated market analysis</li>
+                    <li>Photo and virtual tour management</li>
+                    <li>Price optimization suggestions</li>
+                </ul>
+                <button class="tool-btn">Manage Properties</button>
+            </div>
+
+            <div class="tool-card hover-lift" onclick="openTool('analytics')">
+                <div class="tool-icon analytics">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h3 class="tool-title">Analytics & Reporting</h3>
+                <p class="tool-description">Comprehensive business intelligence with performance metrics and growth insights.</p>
+                <ul class="tool-features">
+                    <li>Sales performance tracking</li>
+                    <li>Lead conversion analytics</li>
+                    <li>Market trend analysis</li>
+                    <li>Custom report generation</li>
+                </ul>
+                <button class="tool-btn">View Analytics</button>
+            </div>
+
+            <div class="tool-card hover-lift" onclick="openTool('communication')">
+                <div class="tool-icon communication">
+                    <i class="fas fa-comments"></i>
+                </div>
+                <h3 class="tool-title">Client Communication</h3>
+                <p class="tool-description">Unified communication hub for managing all client interactions and follow-ups.</p>
+                <ul class="tool-features">
+                    <li>Centralized messaging system</li>
+                    <li>Automated follow-up reminders</li>
+                    <li>Client interaction history</li>
+                    <li>Template library for quick responses</li>
+                </ul>
+                <button class="tool-btn">Open Communication Hub</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="notification" class="notification"></div>
+
+    <script src="security-enhancements.js"></script>
+    <script>
+        // Initialize security
+        const security = new SecurityEnhancer();
+        
+        // Check authentication on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuthentication();
+            initializeDashboard();
+        });
+
+        function checkAuthentication() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn');
+            const userEmail = localStorage.getItem('userEmail');
+            
+            if (!isLoggedIn || isLoggedIn !== 'true') {
+                showNotification('Please log in to access the dashboard', 'error');
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 2000);
+                return;
+            }
+            
+            // Update user info
+            if (userEmail) {
+                document.getElementById('userName').textContent = userEmail;
+                document.getElementById('userAvatar').textContent = userEmail.charAt(0).toUpperCase();
+            }
+        }
+
+        function initializeDashboard() {
+            // Simulate loading real data
+            setTimeout(() => {
+                updateStats();
+                showNotification('Dashboard loaded successfully!', 'success');
+            }, 1000);
+        }
+
+        function updateStats() {
+            // Simulate real-time stats updates
+            const stats = {
+                totalLeads: Math.floor(Math.random() * 100) + 200,
+                activeListings: Math.floor(Math.random() * 20) + 10,
+                scheduledAppts: Math.floor(Math.random() * 15) + 5,
+                emailsSent: Math.floor(Math.random() * 500) + 1000
+            };
+
+            Object.keys(stats).forEach(key => {
+                const element = document.getElementById(key);
+                if (element) {
+                    animateNumber(element, parseInt(element.textContent.replace(/,/g, '')), stats[key]);
+                }
+            });
+        }
+
+        function animateNumber(element, start, end) {
+            const duration = 1000;
+            const startTime = performance.now();
+            
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const current = Math.floor(start + (end - start) * progress);
+                
+                element.textContent = current.toLocaleString();
+                
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                }
+            }
+            
+            requestAnimationFrame(update);
+        }
+
+        function openTool(toolName) {
+            showNotification(`Opening ${toolName.replace('-', ' ')}...`, 'info');
+            
+            // Route to specific tool pages
+            const routes = {
+                'email-campaigns': 'email-campaigns.html',
+                'lead-generation': 'lead-generation.html',
+                'appointments': 'appointments.html',
+                'property-management': 'property-management.html',
+                'analytics': 'analytics.html',
+                'communication': 'communication.html'
+            };
+            
+            if (routes[toolName]) {
+                setTimeout(() => {
+                    window.location.href = routes[toolName];
+                }, 1000);
+            }
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('isLoggedIn');
+                localStorage.removeItem('userEmail');
+                localStorage.removeItem('da_realest_geek_user');
+                showNotification('Logged out successfully', 'success');
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1500);
+            }
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.getElementById('notification');
+            notification.textContent = security.sanitizeInput(message);
+            notification.className = `notification ${type} show`;
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Add keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                // Close any open modals or return to main view
+            }
+        });
+
+        // Auto-refresh stats every 30 seconds
+        setInterval(updateStats, 30000);
+    </script>
+</body>
+</html>

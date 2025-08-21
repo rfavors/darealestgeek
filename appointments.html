@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointments - da Realest Geek</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/modern-styles.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #764ba2;
+        }
+
+        .page-title {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .page-title h1 {
+            font-size: 32px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .page-title p {
+            color: #666;
+            font-size: 18px;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .card h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn.secondary {
+            background: #f8f9fa;
+            color: #333;
+            border: 2px solid #e9ecef;
+        }
+
+        .btn.secondary:hover {
+            background: #e9ecef;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .calendar-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .calendar-nav {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .nav-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background: #5a6fd8;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1px;
+            background: #e9ecef;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .calendar-day {
+            background: white;
+            padding: 15px 5px;
+            text-align: center;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            min-height: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+        }
+
+        .calendar-day:hover {
+            background: #f8f9fa;
+        }
+
+        .calendar-day.today {
+            background: #667eea;
+            color: white;
+        }
+
+        .calendar-day.other-month {
+            color: #ccc;
+            background: #f8f9fa;
+        }
+
+        .calendar-day.has-appointment {
+            background: #e3f2fd;
+            border-left: 4px solid #2196F3;
+        }
+
+        .day-number {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .appointment-dot {
+            width: 6px;
+            height: 6px;
+            background: #2196F3;
+            border-radius: 50%;
+            margin: 1px;
+        }
+
+        .upcoming-appointments {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .appointment-item {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-left: 4px solid #667eea;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .appointment-item:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .appointment-item.urgent {
+            border-left-color: #ff4757;
+        }
+
+        .appointment-item.confirmed {
+            border-left-color: #4CAF50;
+        }
+
+        .appointment-time {
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .appointment-client {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .appointment-type {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .appointment-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .action-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .action-btn:hover {
+            background: #5a6fd8;
+        }
+
+        .action-btn.confirm {
+            background: #4CAF50;
+        }
+
+        .action-btn.reschedule {
+            background: #FF9800;
+        }
+
+        .action-btn.cancel {
+            background: #f44336;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .stat-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            border-left: 4px solid #667eea;
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 600px;
+            margin: 50px auto;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .time-slots {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .time-slot {
+            padding: 8px 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 6px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .time-slot:hover {
+            border-color: #667eea;
+            background: #f8f9fa;
+        }
+
+        .time-slot.selected {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .time-slot.unavailable {
+            background: #f8f9fa;
+            color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            z-index: 1000;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success { background: #4CAF50; }
+        .notification.error { background: #f44336; }
+        .notification.info { background: #2196F3; }
+
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 10px;
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .calendar-grid {
+                font-size: 12px;
+            }
+            
+            .calendar-day {
+                min-height: 60px;
+                padding: 10px 2px;
+            }
+            
+            .time-slots {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-calendar-alt"></i> Appointments
+            </div>
+            <nav class="nav-links">
+                <a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a>
+                <a href="email-campaigns.html"><i class="fas fa-envelope"></i> Campaigns</a>
+                <a href="lead-generation.html"><i class="fas fa-users"></i> Leads</a>
+                <a href="analytics.html"><i class="fas fa-chart-line"></i> Analytics</a>
+                <button class="btn secondary" onclick="logout()" style="width: auto; margin: 0; padding: 8px 16px;">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </nav>
+        </header>
+
+        <section class="page-title">
+            <h1>Appointment Scheduling</h1>
+            <p>Manage your client meetings and property showings</p>
+        </section>
+
+        <div class="dashboard-grid">
+            <div class="sidebar">
+                <div class="card">
+                    <h3>Quick Actions</h3>
+                    <button class="btn" onclick="scheduleAppointment()">
+                        <i class="fas fa-plus"></i> Schedule Appointment
+                    </button>
+                    <button class="btn secondary" onclick="viewAvailability()">
+                        <i class="fas fa-clock"></i> Check Availability
+                    </button>
+                    <button class="btn secondary" onclick="sendReminders()">
+                        <i class="fas fa-bell"></i> Send Reminders
+                    </button>
+                    <button class="btn secondary" onclick="exportCalendar()">
+                        <i class="fas fa-download"></i> Export Calendar
+                    </button>
+                </div>
+
+                <div class="card">
+                    <h3>Today's Statistics</h3>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number" id="todayAppointments">5</div>
+                            <div class="stat-label">Today's Meetings</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="weekAppointments">23</div>
+                            <div class="stat-label">This Week</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="pendingConfirmations">3</div>
+                            <div class="stat-label">Pending</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="completionRate">92%</div>
+                            <div class="stat-label">Completion Rate</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Upcoming Appointments</h3>
+                    <div class="upcoming-appointments" id="upcomingAppointments">
+                        <!-- Appointments will be dynamically generated here -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="calendar-container">
+                <div class="calendar-header">
+                    <h3 id="currentMonth">January 2024</h3>
+                    <div class="calendar-nav">
+                        <button class="nav-btn" onclick="previousMonth()">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <button class="nav-btn" onclick="today()">
+                            Today
+                        </button>
+                        <button class="nav-btn" onclick="nextMonth()">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="calendar-grid" id="calendarGrid">
+                    <!-- Calendar will be dynamically generated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Schedule Appointment Modal -->
+    <div id="scheduleModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Schedule New Appointment</h3>
+                <button class="close-btn" onclick="closeModal('scheduleModal')">&times;</button>
+            </div>
+            <form id="scheduleForm">
+                <div class="form-group">
+                    <label for="clientName">Client Name</label>
+                    <input type="text" id="clientName" required>
+                </div>
+                <div class="form-group">
+                    <label for="clientEmail">Client Email</label>
+                    <input type="email" id="clientEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="clientPhone">Client Phone</label>
+                    <input type="tel" id="clientPhone">
+                </div>
+                <div class="form-group">
+                    <label for="appointmentType">Appointment Type</label>
+                    <select id="appointmentType">
+                        <option value="consultation">Initial Consultation</option>
+                        <option value="showing">Property Showing</option>
+                        <option value="listing">Listing Appointment</option>
+                        <option value="closing">Closing Meeting</option>
+                        <option value="followup">Follow-up Meeting</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="appointmentDate">Date</label>
+                    <input type="date" id="appointmentDate" required>
+                </div>
+                <div class="form-group">
+                    <label>Available Time Slots</label>
+                    <div class="time-slots" id="timeSlots">
+                        <!-- Time slots will be generated dynamically -->
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="propertyAddress">Property Address (if applicable)</label>
+                    <input type="text" id="propertyAddress">
+                </div>
+                <div class="form-group">
+                    <label for="appointmentNotes">Notes</label>
+                    <textarea id="appointmentNotes" rows="3"></textarea>
+                </div>
+                <button type="submit" class="btn">Schedule Appointment</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Appointment Details Modal -->
+    <div id="appointmentDetailsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="appointmentDetailsTitle">Appointment Details</h3>
+                <button class="close-btn" onclick="closeModal('appointmentDetailsModal')">&times;</button>
+            </div>
+            <div id="appointmentDetailsContent">
+                <!-- Appointment details will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <div id="notification" class="notification"></div>
+
+    <script src="security-enhancements.js"></script>
+    <script>
+        // Initialize security
+        const security = new SecurityEnhancer();
+        
+        // Current date and calendar state
+        let currentDate = new Date();
+        let selectedTimeSlot = null;
+        
+        // Sample appointment data
+        let appointments = [
+            {
+                id: 1,
+                clientName: 'John Smith',
+                clientEmail: 'john.smith@email.com',
+                clientPhone: '(555) 123-4567',
+                type: 'showing',
+                date: '2024-01-17',
+                time: '10:00',
+                address: '123 Main St, Downtown',
+                notes: 'First-time buyer, interested in 3BR homes',
+                status: 'confirmed'
+            },
+            {
+                id: 2,
+                clientName: 'Sarah Johnson',
+                clientEmail: 'sarah.j@email.com',
+                clientPhone: '(555) 234-5678',
+                type: 'consultation',
+                date: '2024-01-17',
+                time: '14:00',
+                address: '',
+                notes: 'Wants to sell current home and upgrade',
+                status: 'pending'
+            },
+            {
+                id: 3,
+                clientName: 'Mike Davis',
+                clientEmail: 'mike.davis@email.com',
+                clientPhone: '(555) 345-6789',
+                type: 'listing',
+                date: '2024-01-18',
+                time: '09:00',
+                address: '456 Oak Ave, Suburbs',
+                notes: 'Investment property listing',
+                status: 'confirmed'
+            },
+            {
+                id: 4,
+                clientName: 'Emily Wilson',
+                clientEmail: 'emily.w@email.com',
+                clientPhone: '(555) 456-7890',
+                type: 'showing',
+                date: '2024-01-19',
+                time: '11:00',
+                address: '789 Pine St, Uptown',
+                notes: 'Ready to make offer, pre-approved',
+                status: 'confirmed'
+            },
+            {
+                id: 5,
+                clientName: 'Robert Brown',
+                clientEmail: 'rob.brown@email.com',
+                clientPhone: '(555) 567-8901',
+                type: 'followup',
+                date: '2024-01-20',
+                time: '15:30',
+                address: '',
+                notes: 'Follow up on offer status',
+                status: 'pending'
+            }
+        ];
+
+        // Available time slots
+        const timeSlots = [
+            '09:00', '09:30', '10:00', '10:30', '11:00', '11:30',
+            '12:00', '12:30', '13:00', '13:30', '14:00', '14:30',
+            '15:00', '15:30', '16:00', '16:30', '17:00', '17:30'
+        ];
+
+        // Check authentication on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuthentication();
+            initializePage();
+        });
+
+        function checkAuthentication() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn');
+            if (!isLoggedIn || isLoggedIn !== 'true') {
+                showNotification('Please log in to access appointments', 'error');
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 2000);
+                return;
+            }
+        }
+
+        function initializePage() {
+            updateStats();
+            renderCalendar();
+            renderUpcomingAppointments();
+            
+            // Check for lead ID in URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const leadId = urlParams.get('leadId');
+            if (leadId) {
+                showNotification(`Ready to schedule appointment for lead #${leadId}`, 'info');
+                setTimeout(() => {
+                    scheduleAppointment();
+                }, 1000);
+            }
+        }
+
+        function updateStats() {
+            const today = new Date().toISOString().split('T')[0];
+            const todayAppointments = appointments.filter(apt => apt.date === today).length;
+            
+            const startOfWeek = new Date();
+            startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
+            const endOfWeek = new Date(startOfWeek);
+            endOfWeek.setDate(endOfWeek.getDate() + 6);
+            
+            const weekAppointments = appointments.filter(apt => {
+                const aptDate = new Date(apt.date);
+                return aptDate >= startOfWeek && aptDate <= endOfWeek;
+            }).length;
+            
+            const pendingConfirmations = appointments.filter(apt => apt.status === 'pending').length;
+            const completionRate = Math.floor(Math.random() * 10) + 85;
+
+            document.getElementById('todayAppointments').textContent = todayAppointments;
+            document.getElementById('weekAppointments').textContent = weekAppointments;
+            document.getElementById('pendingConfirmations').textContent = pendingConfirmations;
+            document.getElementById('completionRate').textContent = completionRate + '%';
+        }
+
+        function renderCalendar() {
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+            
+            // Update month display
+            const monthNames = [
+                'January', 'February', 'March', 'April', 'May', 'June',
+                'July', 'August', 'September', 'October', 'November', 'December'
+            ];
+            document.getElementById('currentMonth').textContent = `${monthNames[month]} ${year}`;
+            
+            // Get first day of month and number of days
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            const daysInMonth = lastDay.getDate();
+            const startingDayOfWeek = firstDay.getDay();
+            
+            const calendarGrid = document.getElementById('calendarGrid');
+            calendarGrid.innerHTML = '';
+            
+            // Add day headers
+            const dayHeaders = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            dayHeaders.forEach(day => {
+                const dayHeader = document.createElement('div');
+                dayHeader.className = 'calendar-day';
+                dayHeader.style.fontWeight = 'bold';
+                dayHeader.style.background = '#667eea';
+                dayHeader.style.color = 'white';
+                dayHeader.textContent = day;
+                calendarGrid.appendChild(dayHeader);
+            });
+            
+            // Add empty cells for days before month starts
+            for (let i = 0; i < startingDayOfWeek; i++) {
+                const emptyDay = document.createElement('div');
+                emptyDay.className = 'calendar-day other-month';
+                calendarGrid.appendChild(emptyDay);
+            }
+            
+            // Add days of the month
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day';
+                
+                const dayNumber = document.createElement('div');
+                dayNumber.className = 'day-number';
+                dayNumber.textContent = day;
+                dayElement.appendChild(dayNumber);
+                
+                // Check if this day has appointments
+                const dateString = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const dayAppointments = appointments.filter(apt => apt.date === dateString);
+                
+                if (dayAppointments.length > 0) {
+                    dayElement.classList.add('has-appointment');
+                    dayAppointments.forEach(() => {
+                        const dot = document.createElement('div');
+                        dot.className = 'appointment-dot';
+                        dayElement.appendChild(dot);
+                    });
+                }
+                
+                // Mark today
+                const today = new Date();
+                if (year === today.getFullYear() && month === today.getMonth() && day === today.getDate()) {
+                    dayElement.classList.add('today');
+                }
+                
+                dayElement.onclick = () => selectDate(dateString);
+                calendarGrid.appendChild(dayElement);
+            }
+        }
+
+        function renderUpcomingAppointments() {
+            const upcomingContainer = document.getElementById('upcomingAppointments');
+            upcomingContainer.innerHTML = '';
+            
+            // Sort appointments by date and time
+            const sortedAppointments = appointments
+                .filter(apt => new Date(apt.date + 'T' + apt.time) >= new Date())
+                .sort((a, b) => new Date(a.date + 'T' + a.time) - new Date(b.date + 'T' + b.time))
+                .slice(0, 5); // Show only next 5 appointments
+            
+            sortedAppointments.forEach(appointment => {
+                const appointmentElement = document.createElement('div');
+                appointmentElement.className = `appointment-item ${appointment.status === 'pending' ? 'urgent' : 'confirmed'}`;
+                appointmentElement.onclick = () => viewAppointmentDetails(appointment);
+                
+                appointmentElement.innerHTML = `
+                    <div class="appointment-time">${appointment.date} at ${appointment.time}</div>
+                    <div class="appointment-client">${security.sanitizeInput(appointment.clientName)}</div>
+                    <div class="appointment-type">${security.sanitizeInput(appointment.type.charAt(0).toUpperCase() + appointment.type.slice(1))}</div>
+                    <div class="appointment-actions">
+                        <button class="action-btn confirm" onclick="event.stopPropagation(); confirmAppointment(${appointment.id})">
+                            <i class="fas fa-check"></i> Confirm
+                        </button>
+                        <button class="action-btn reschedule" onclick="event.stopPropagation(); rescheduleAppointment(${appointment.id})">
+                            <i class="fas fa-clock"></i> Reschedule
+                        </button>
+                        <button class="action-btn cancel" onclick="event.stopPropagation(); cancelAppointment(${appointment.id})">
+                            <i class="fas fa-times"></i> Cancel
+                        </button>
+                    </div>
+                `;
+                
+                upcomingContainer.appendChild(appointmentElement);
+            });
+        }
+
+        function selectDate(dateString) {
+            document.getElementById('appointmentDate').value = dateString;
+            generateTimeSlots(dateString);
+            scheduleAppointment();
+        }
+
+        function generateTimeSlots(date) {
+            const timeSlotsContainer = document.getElementById('timeSlots');
+            timeSlotsContainer.innerHTML = '';
+            
+            // Get existing appointments for this date
+            const existingAppointments = appointments.filter(apt => apt.date === date);
+            const bookedTimes = existingAppointments.map(apt => apt.time);
+            
+            timeSlots.forEach(time => {
+                const timeSlot = document.createElement('div');
+                timeSlot.className = 'time-slot';
+                timeSlot.textContent = time;
+                
+                if (bookedTimes.includes(time)) {
+                    timeSlot.classList.add('unavailable');
+                } else {
+                    timeSlot.onclick = () => selectTimeSlot(timeSlot, time);
+                }
+                
+                timeSlotsContainer.appendChild(timeSlot);
+            });
+        }
+
+        function selectTimeSlot(element, time) {
+            // Remove previous selection
+            document.querySelectorAll('.time-slot.selected').forEach(slot => {
+                slot.classList.remove('selected');
+            });
+            
+            // Select new time slot
+            element.classList.add('selected');
+            selectedTimeSlot = time;
+        }
+
+        function scheduleAppointment() {
+            document.getElementById('scheduleModal').style.display = 'block';
+            
+            // Set default date to today if not already set
+            const dateInput = document.getElementById('appointmentDate');
+            if (!dateInput.value) {
+                const today = new Date().toISOString().split('T')[0];
+                dateInput.value = today;
+                generateTimeSlots(today);
+            }
+        }
+
+        function viewAppointmentDetails(appointment) {
+            document.getElementById('appointmentDetailsTitle').textContent = `${appointment.clientName} - ${appointment.type.charAt(0).toUpperCase() + appointment.type.slice(1)}`;
+            document.getElementById('appointmentDetailsContent').innerHTML = `
+                <div style="line-height: 1.8;">
+                    <p><strong>Client:</strong> ${security.sanitizeInput(appointment.clientName)}</p>
+                    <p><strong>Email:</strong> ${security.sanitizeInput(appointment.clientEmail)}</p>
+                    <p><strong>Phone:</strong> ${security.sanitizeInput(appointment.clientPhone)}</p>
+                    <p><strong>Type:</strong> ${security.sanitizeInput(appointment.type.charAt(0).toUpperCase() + appointment.type.slice(1))}</p>
+                    <p><strong>Date & Time:</strong> ${appointment.date} at ${appointment.time}</p>
+                    <p><strong>Address:</strong> ${security.sanitizeInput(appointment.address || 'N/A')}</p>
+                    <p><strong>Status:</strong> <span style="color: ${appointment.status === 'confirmed' ? '#4CAF50' : '#FF9800'}; font-weight: bold;">${appointment.status.toUpperCase()}</span></p>
+                    <p><strong>Notes:</strong> ${security.sanitizeInput(appointment.notes)}</p>
+                    <div style="margin-top: 20px; display: flex; gap: 10px;">
+                        <button class="btn" onclick="confirmAppointment(${appointment.id})" style="flex: 1;">Confirm</button>
+                        <button class="btn" onclick="rescheduleAppointment(${appointment.id})" style="flex: 1;">Reschedule</button>
+                        <button class="btn" onclick="cancelAppointment(${appointment.id})" style="flex: 1; background: #f44336;">Cancel</button>
+                    </div>
+                </div>
+            `;
+            document.getElementById('appointmentDetailsModal').style.display = 'block';
+        }
+
+        function confirmAppointment(appointmentId) {
+            const appointment = appointments.find(apt => apt.id === appointmentId);
+            if (appointment) {
+                appointment.status = 'confirmed';
+                showNotification(`Appointment with ${appointment.clientName} confirmed`, 'success');
+                renderUpcomingAppointments();
+                updateStats();
+                closeModal('appointmentDetailsModal');
+            }
+        }
+
+        function rescheduleAppointment(appointmentId) {
+            const appointment = appointments.find(apt => apt.id === appointmentId);
+            if (appointment) {
+                showNotification(`Rescheduling appointment with ${appointment.clientName}`, 'info');
+                closeModal('appointmentDetailsModal');
+                // In a real app, this would open a rescheduling interface
+            }
+        }
+
+        function cancelAppointment(appointmentId) {
+            if (confirm('Are you sure you want to cancel this appointment?')) {
+                const appointmentIndex = appointments.findIndex(apt => apt.id === appointmentId);
+                if (appointmentIndex !== -1) {
+                    const appointment = appointments[appointmentIndex];
+                    appointments.splice(appointmentIndex, 1);
+                    showNotification(`Appointment with ${appointment.clientName} cancelled`, 'success');
+                    renderUpcomingAppointments();
+                    renderCalendar();
+                    updateStats();
+                    closeModal('appointmentDetailsModal');
+                }
+            }
+        }
+
+        function viewAvailability() {
+            showNotification('Availability checker opened', 'info');
+        }
+
+        function sendReminders() {
+            showNotification('Sending appointment reminders...', 'info');
+            setTimeout(() => {
+                showNotification('Reminders sent successfully!', 'success');
+            }, 2000);
+        }
+
+        function exportCalendar() {
+            showNotification('Exporting calendar to ICS format...', 'info');
+            setTimeout(() => {
+                showNotification('Calendar exported successfully!', 'success');
+            }, 2000);
+        }
+
+        function previousMonth() {
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            renderCalendar();
+        }
+
+        function nextMonth() {
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            renderCalendar();
+        }
+
+        function today() {
+            currentDate = new Date();
+            renderCalendar();
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('isLoggedIn');
+                localStorage.removeItem('userEmail');
+                showNotification('Logged out successfully', 'success');
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1500);
+            }
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.getElementById('notification');
+            notification.textContent = security.sanitizeInput(message);
+            notification.className = `notification ${type} show`;
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Handle schedule form submission
+        document.getElementById('scheduleForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (!selectedTimeSlot) {
+                showNotification('Please select a time slot', 'error');
+                return;
+            }
+            
+            const newAppointment = {
+                id: appointments.length + 1,
+                clientName: document.getElementById('clientName').value,
+                clientEmail: document.getElementById('clientEmail').value,
+                clientPhone: document.getElementById('clientPhone').value,
+                type: document.getElementById('appointmentType').value,
+                date: document.getElementById('appointmentDate').value,
+                time: selectedTimeSlot,
+                address: document.getElementById('propertyAddress').value,
+                notes: document.getElementById('appointmentNotes').value,
+                status: 'pending'
+            };
+            
+            appointments.push(newAppointment);
+            renderUpcomingAppointments();
+            renderCalendar();
+            updateStats();
+            closeModal('scheduleModal');
+            showNotification(`Appointment scheduled with ${newAppointment.clientName}`, 'success');
+            
+            // Reset form
+            document.getElementById('scheduleForm').reset();
+            selectedTimeSlot = null;
+            document.querySelectorAll('.time-slot.selected').forEach(slot => {
+                slot.classList.remove('selected');
+            });
+        });
+
+        // Handle date change in form
+        document.getElementById('appointmentDate').addEventListener('change', function(e) {
+            generateTimeSlots(e.target.value);
+        });
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(modal => {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        }
+
+        // Auto-refresh appointments every 30 seconds
+        setInterval(() => {
+            updateStats();
+            renderUpcomingAppointments();
+        }, 30000);
+    </script>
+</body>
+</html>
